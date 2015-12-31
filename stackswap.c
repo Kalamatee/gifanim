@@ -11,6 +11,9 @@
 **
 */
 
+struct MyStackSwapStruct;
+struct GIFAnimInstData;
+
 /* main includes */
 #include "classbase.h"
 
