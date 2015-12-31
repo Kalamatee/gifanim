@@ -1,0 +1,117 @@
+#******************************************************************************
+#*
+#*  $VER: SMakefile 2.3 (24.5.98)
+#*  gifanim.datatype 2.3
+#*
+#*  SAS/C makefile for gifanim.datatype
+#*
+#*  Written 1997/1998 by Roland 'Gizzy' Mainz
+#*  Original example source from David N. Junod
+#*
+#******************************************************************************
+
+MODNAME                = gifanim.datatype
+VERSION                = 2
+
+LD_FILE                = $(MODNAME).ld
+LD_STRIP               = $(MODNAME)
+
+C_COMPILER             = SC
+C_COMPILER_OPTS        = ANSI STRICT INCLUDEDIR=Development:CGraphX/C/Include/ INCLUDEDIR=datatypes_library:Development/ INCLUDEDIR=animation_datatype: \
+                         PARAMETERS=REGISTER UNSIGNEDCHARS CODE=NEAR DATA=NEAR NOSTACKCHECK NOMULTIPLEINCLUDES STRINGMERGE VERBOSE MEMORYSIZE=HUGE ERRORREXX
+C_COMPILER_DEBUG       = DEBUG=LINE IGNORE=165
+C_COMPILER_OPTIMIZE    = OPTIMIZE OPTIMIZETIME OPTIMIZERINLINELOCAL OPTIMIZERDEPTH=6 OPTIMIZERRECURDEPTH=6 OPTIMIZERCOMPLEXITY=6
+
+ASSEMBLER              = a68k
+ASSEMBLER_OPTS         = -iinclude31: -o
+
+LINKER                 = SLINK
+LINKER_OPTS            = ADDSYM SMALLCODE SMALLDATA MAP $(MODNAME).map HLSXF PLAIN SWIDTH 16 VERBOSE NOICONS
+LINKER_OPTS_STRIP      = STRIPDEBUG VERBOSE NOICONS
+
+C_SOURCES              = classbase.c stackswap.c dispatch.c prefs.c misc.c encoder.c
+ASM_SOURCES            = classinit.asm endcode.asm
+
+OBJECTS                = classinit.o classbase.o stackswap.o dispatch.o prefs.o misc.o encoder.o endcode.o
+
+STARTUP                =
+LIBS                   = SC:lib/sc.lib LIB31:amiga.lib
+
+
+############################################################################################################################################################
+# Rebuild the project...
+#
+all: $(LD_STRIP) $(MODNAME).doc
+
+
+############################################################################################################################################################
+# Build the stripped load file...
+#
+$(LD_STRIP):    $(LD_FILE)
+	$(LINKER) FROM $(LD_FILE) TO $(LD_STRIP) $(LINKER_OPTS_STRIP)
+
+
+############################################################################################################################################################
+# Build the load file...
+#
+$(LD_FILE):    $(OBJECTS) $(LIBS)
+	$(LINKER) FROM $(STARTUP) $(OBJECTS) TO $(LD_FILE) LIB $(LIBS) $(LINKER_OPTS)
+
+
+############################################################################################################################################################
+# Default rules...
+# Disable $(C_COMPILER_OPTIMIZE) during debugging cycle
+#
+.c.o:
+	$(C_COMPILER) $(C_COMPILER_OPTS) $(C_COMPILER_DEBUG) $(C_COMPILER_OPTIMIZE) $*.c
+
+.asm.o:
+	$(ASSEMBLER) $*.asm $(ASSEMBLER_OPTS)$*.o
+
+
+############################################################################################################################################################
+# All dependencies...
+#
+classinit.o:    classinit.asm $(MODNAME)_rev.rev classbase.i
+classbase.o:    classbase.c classbase.h
+stackswap.o:    stackswap.c classbase.h
+dispatch.o:     dispatch.c classdata.h classbase.h
+encoder.o:      encoder.c encoder.h classdata.h classbase.h
+prefs.o:        prefs.c encoder.h classdata.h classbase.h
+misc.o:         misc.c classbase.h
+
+############################################################################################################################################################
+# Make protos
+#
+protos:
+	MKProto $(C_SOURCES) TO class_iprotos.h
+
+############################################################################################################################################################
+# Bump the version...
+#
+version:
+	BumpRev $(VERSION) $(MODNAME)
+
+
+############################################################################################################################################################
+# Delete all object files
+#
+clean:
+	-Delete $(OBJECTS)
+	-Delete $(LD_FILE) $(LD_STRIP) $(MODNAME).map \#?.BAK
+
+
+############################################################################################################################################################
+# Build autodoc
+#
+$(MODNAME).doc:    $(C_SOURCES)
+	Autodoc -I -C >$(MODNAME).doc $(C_SOURCES)
+
+
+############################################################################################################################################################
+# Install the current build locally
+#
+install:
+	Copy CLONE FROM $(LD_STRIP) TO SYS:Classes/DataTypes/$(MODNAME)
+	Avail FLUSH
+

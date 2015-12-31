@@ -1,0 +1,10 @@
+FROM "descriptor.o"
+TO "descriptor"
+LIB lib31:debug.lib LIB:sc.lib LIB:amiga.lib
+ADDSYM
+SMALLCODE
+SMALLDATA
+VERBOSE
+NOICONS
+DEFINE @__chkabort=@__dummy
+MAP descriptor.map,h,l,o,s,x

@@ -1,0 +1,75 @@
+; gifanim.datatype test script
+; Execute it from the base directory
+
+FailAt 10
+
+; Check Version of anmation.datatype
+C:Version "SYS:Classes/DataTypes/animation.datatype" FILE VERSION=41 >NIL:
+
+If WARN
+  Echo "You need at least animation.datatype V41 to run this datatype, but"
+  Echo "I found only"
+  C:Version "SYS:Classes/DataTypes/animation.datatype" FILE FULL
+  Quit 20
+EndIf
+
+; main installation part
+Ask "Do you like to continue the installation of gifanim.datatype ? (y/n)"
+
+If WARN
+  Ask "Test mode (programmers ONLY) y/n"
+
+  If WARN
+    ;# install datatype for testing
+    Set ECHO ON
+
+    ; Is here the datatype shared library ?
+    If EXISTS "gifanim.datatype.ld"
+      ; Check if we created the test directory
+      If NOT EXISTS "RAM:DataTypes"
+        MakeDir "RAM:DataTypes"
+        Assign LIBS: RAM: ADD
+      EndIf
+
+      ; Copy descriptor
+      If NOT EXISTS "RAM:GIFANIM"
+        Copy CLONE FROM="descriptor/GIF(ANIM|%)(%|.info)" TO="RAM:"
+      EndIf
+
+      ; Copy class library
+      Copy CLONE FROM="gifanim.datatype.ld" TO="RAM:Datatypes/gifanim.datatype"
+
+      ; Get rid of the old version
+      C:FlushLibs
+    Else
+      ECHO "No gifanim.datatype.ld in this directory"
+      Quit 20
+    EndIf
+
+    Set ECHO OFF
+  Else
+    ;# install datatype on disk
+    If EXISTS "gifanim.datatype"
+      ; Copy descriptor
+      Copy CLONE FROM="descriptor/GIF(ANIM|%)(%|.info)" TO="DEVS:DataTypes/"
+
+      ; Copy class library
+      Copy CLONE FROM="gifanim.datatype" TO="SYS:Classes/Datatypes/gifanim.datatype"
+
+      ; Be sure that an old version will be swapped out and that the descriptor gets loaded...
+      C:Avail FLUSH >NIL:
+      C:AddDataTypes REFRESH QUIET
+    Else
+      ECHO "No gifanim.datatype in this directory"
+      Quit 20
+    EndIf
+  Endif
+Else
+  Echo "Installation aborted"
+  Quit 5
+Endif
+
+Echo "****** Installation complete"
+Echo "Reboot before using the datatype"
+
+; EOF

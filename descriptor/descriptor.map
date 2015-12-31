@@ -1,0 +1,24 @@
+descriptor              24-May-98 02:06:12  Hunk Section                Page 1-1
+
+ num hunk         size filename         punit    type         base  alv     size
+   0 text          260 descriptor.o     descript code            0    0      22c
+                       LIB:sc.lib       dummy.c  code          22c    0        4
+                       LIB:sc.lib       strncmp. code          230    0       30
+descriptor             24-May-98 02:06:12  Symbol Section               Page 2-1
+
+symbol     offset:hunk symbol     offset:hunk symbol     offset:hunk
+@strncmp      23c:0    @__chkab      22c:0    @__dummy      22c:0   
+_DTHook         0:0    _LinkerD       (0:*)   _strncmp      230:0   
+__BSSBAS       (0:*)   __BSSLEN       (0:*)   __CoverL       (0:*)  
+__CoverS       (0:*)   __LibRev       (0:*)   __LibVer       (0:*)  
+___dummy      22c:0   
+descriptor              24-May-98 02:06:12  Xref Section                Page 3-1
+
+symbol   (Def) Module  Off (Ref) Module  Off (Ref) Module  Off (Ref) Module  Off
+@strncmp strncmp.        c descript       3c
+_LinkerD       (0:*)       descript        c
+descriptor            24-May-98 02:06:12  Library Section               Page 5-1
+
+filename         punit    hunk     type       offset:hunk     size
+lib31:debug.lib  LIB:sc.lib       dummy.c  text     code          22c:0           4
+                                  strncmp. text     code          230:0          30

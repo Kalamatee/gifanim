@@ -1,0 +1,158 @@
+gifanim.datatype.ld     24-May-98 23:41:04  Hunk Section                Page 1-1
+
+ num hunk         size filename         punit    type         base  alv     size
+   0              5810 classinit.o      <noname> code            0    0       90
+                       classbase.o      classbas code           90    0      304
+                       stackswap.o      stackswa code          394    0      110
+                       dispatch.o       dispatch code          4a4    0     3084
+                       prefs.o          prefs.c  code         3528    0      73c
+                       misc.o           misc.c   code         3c64    0      648
+                       encoder.o        encoder. code         42ac    0     11e8
+                       endcode.o        <noname> code         5494    0        0
+                       SC:lib/sc.lib    _cxamemc code         5494    0       94
+                       SC:lib/sc.lib    newlist  code         5528    0       14
+                       SC:lib/sc.lib    classfac code         553c    0       e4
+                       SC:lib/sc.lib    stccpy.c code         5620    0       3c
+                       SC:lib/sc.lib    _CXD33.o code         565c    0       c4
+                       SC:lib/sc.lib    _CXM33.o code         5720    0       20
+                       SC:lib/sc.lib    _CXM22.o code         5740    0       30
+                       SC:lib/sc.lib    strpbrk. code         5770    0       2c
+                       SC:lib/sc.lib    strncmp. code         579c    0       30
+                       SC:lib/sc.lib    strcat.o code         57cc    0       18
+                       SC:lib/sc.lib    memmove. code         57e4    0       2c
+gifanim.datatype.ld    24-May-98 23:41:04  Symbol Section               Page 2-1
+
+symbol             offset:hunk symbol             offset:hunk
+@AllocVecPooled      424a:0    @CMAP2ColorMap       3ec0:0   
+@CMAP2Object         3d9a:0    @CoerceMethodA       558c:0   
+@CopyBitMap          4108:0    @CopyColorMap        3f7c:0   
+@DoMethodA           55b6:0    @DoSuperMethodA      55d0:0   
+@FreeVecPooled       427e:0    @IBMPC2ISOLatin1     3cfa:0   
+@initClass            4a4:0    @memmove             57f0:0   
+@NewList             552c:0    @OpenLogfile         2618:0   
+@ReadENVPrefs        3528:0    @SaveGIFAnim         42ac:0   
+@stccpy              562c:0    @stpbrk              5778:0   
+@strcat              57d4:0    @strncmp             57a8:0   
+@strpbrk             5778:0    @WriteRGBPixelAr     4020:0   
+ENDCODE              5494:0    LibReserved            8c:0   
+_CoerceMethod        556a:0    _CoerceMethodA       5580:0   
+_Dispatch             ba0:0    _DoMethod            553c:0   
+_DoMethodA           55ae:0    _DoSuperMethod       5550:0   
+_DoSuperMethodA      55c4:0    _error_printf        26a2:0   
+_LibClose             296:0    _LibExpunge           31a:0   
+_LibInit              126:0    _LibOpen              1ec:0   
+_LinkerDB              (0:*)   _memmove             57e4:0   
+_MyDispatch           47e:0    _mysprintf           3c64:0   
+_NewList             5528:0    _ObtainGIFAnimEn       90:0   
+_SetSuperAttrs       55e6:0    _StackSwapDispat      394:0   
+_stccpy              5620:0    _stpbrk              5770:0   
+_strcat              57cc:0    _strncmp             579c:0   
+_strpbrk             5770:0    _SwapMe               43e:0   
+_verbose_printf      26de:0    __BSSBAS               (0:*)  
+__BSSLEN               (0:*)   __CoverLength          (0:*)  
+__CoverStart           (0:*)   __CXAMEMCPY          5494:0   
+__CXD22              568e:0    __CXD33              565c:0   
+__CXM22              5740:0    __CXM33              5720:0   
+__LibRevision          (0:*)   __LibVersion           (0:*)  
+gifanim.datatype.ld     24-May-98 23:41:04  Xref Section                Page 3-1
+
+symbol           (Def) Module  Off (Ref) Module  Off (Ref) Module  Off
+@AllocVecPooled  misc.c        5e6 dispatch      f68 dispatch     1b44
+                                   dispatch     20cc
+@CMAP2ColorMap   misc.c        25c dispatch     12ac
+@CMAP2Object     misc.c        136 dispatch     127c
+@CopyBitMap      misc.c        4a4 encoder.      62a dispatch     1090
+                                   dispatch     114e dispatch     154e
+                                   dispatch     1d10 dispatch     1da0
+@CopyColorMap    misc.c        318 dispatch     14a6
+@FreeVecPooled   misc.c        61a dispatch     200e dispatch     216a
+@IBMPC2ISOLatin1 misc.c         96 dispatch      dd4
+@initClass       dispatch        0 classbas      1c0
+@memmove         memmove.        c stccpy.c       2c
+@OpenLogfile     dispatch     2174 prefs.c       224
+@ReadENVPrefs    prefs.c         0 encoder.      246 dispatch      820
+@SaveGIFAnim     encoder.        0 dispatch     1a54
+@stccpy          stccpy.c        c prefs.c        f0
+@strcat          strcat.o        8 prefs.c        c6 prefs.c       12c
+@strncmp         strncmp.        c dispatch      958 dispatch      96c
+                                   dispatch      97e
+@strpbrk         strpbrk.        8 prefs.c       48e
+@WriteRGBPixelAr misc.c        3bc dispatch     13ae dispatch     1efa
+ENDCODE              5494:0               a:0       
+_CoerceMethod    classfac       2e dispatch     18fa
+_DoMethod        classfac        0 dispatch     19d6
+_DoMethodA       classfac       72 encoder.      5b4 encoder.      b48
+                                   dispatch     1a2c dispatch     1f98
+_DoSuperMethodA  classfac       88 dispatch      7a6 dispatch     19ba
+                                   dispatch     19ea dispatch     1a66
+                                   dispatch     2038
+_error_printf    dispatch     21fe encoder.      26c encoder.      298
+                                   encoder.      2b8 encoder.      33c
+                                   encoder.      6d8 encoder.      b80
+                                   encoder.      b92 encoder.      bbc
+                                   encoder.      bd6 encoder.      c0e
+                                   prefs.c       29a prefs.c       3fc
+                                   prefs.c       478
+_LibClose        classbas      206       64:0       
+_LibExpunge      classbas      28a       66:0       
+_LibInit         classbas       96       5c:0       
+_LibOpen         classbas      15c       62:0       
+_LinkerDB              (0:*)       dispatch      70a stackswa       10
+                                   stackswa       b2 stackswa       f2
+                                   classbas        4 classbas       a0
+                                   classbas      164 classbas      20e
+                                   classbas      292
+_mysprintf       misc.c          0 prefs.c       3ca dispatch      e86
+                                   dispatch     21d4
+_NewList         newlist         0 dispatch      7e8
+_ObtainGIFAnimEn classbas        0       6a:0       
+_StackSwapDispat stackswa        0 dispatch       28
+_verbose_printf  dispatch     223a encoder.       ee encoder.      5e6
+                                   encoder.      7a6 encoder.      bfa
+                                   prefs.c       2ec prefs.c       434
+gifanim.datatype.ld     24-May-98 23:41:04  Xref Section                Page 3-2
+
+symbol           (Def) Module  Off (Ref) Module  Off (Ref) Module  Off
+__CXAMEMCPY      _cxamemc        0 encoder.      490 misc.c        3e2
+                                   prefs.c        1e dispatch     1aa8
+__CXD22          _CXD33.o       32 encoder.      ad2 misc.c        14e
+                                   misc.c        272 misc.c        52e
+                                   dispatch     1664 dispatch     167c
+                                   dispatch     179c stackswa       4e
+__CXD33          _CXD33.o        0 encoder.     1022 dispatch     23d0
+__CXM22          _CXM22.o        0 encoder.      17a encoder.      67e
+                                   misc.c        518 dispatch      f56
+                                   dispatch     1046 dispatch     1066
+                                   dispatch     10b8 dispatch     1100
+                                   dispatch     111a dispatch     164e
+                                   dispatch     1674 dispatch     16e0
+                                   dispatch     1b32 dispatch     1cc4
+                                   dispatch     1ce6 dispatch     1d54
+                                   dispatch     1d76 dispatch     20ae
+                                   dispatch     20bc dispatch     2844
+__CXM33          _CXM33.o        0 encoder.      7b6
+gifanim.datatype.ld     24-May-98 23:41:04  File Section                Page 4-1
+
+filename         punit    hunk     type       offset:hunk     size
+classinit.o      <noname>          code            0:0          90
+classbase.o      classbas text     code           90:0         304
+stackswap.o      stackswa text     code          394:0         110
+dispatch.o       dispatch text     code          4a4:0        3084
+prefs.o          prefs.c  text     code         3528:0         73c
+misc.o           misc.c   text     code         3c64:0         648
+encoder.o        encoder. text     code         42ac:0        11e8
+endcode.o        <noname> TEXT     code         5494:0           0
+gifanim.datatype.ld   24-May-98 23:41:04  Library Section               Page 5-1
+
+filename         punit    hunk     type       offset:hunk     size
+SC:lib/sc.lib    _cxamemc text     code         5494:0          94
+                 newlist  text     code         5528:0          14
+                 classfac text     code         553c:0          e4
+                 stccpy.c text     code         5620:0          3c
+                 _CXD33.o text     code         565c:0          c4
+                 _CXM33.o text     code         5720:0          20
+                 _CXM22.o text     code         5740:0          30
+                 strpbrk. text     code         5770:0          2c
+                 strncmp. text     code         579c:0          30
+                 strcat.o text     code         57cc:0          18
+                 memmove. text     code         57e4:0          2c
