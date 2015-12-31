@@ -11,12 +11,18 @@
 **
 */
 
+struct MyStackSwapStruct;
+struct GIFAnimInstData;
+struct GIFEncoder;
+
 /* main includes */
 #include "classbase.h"
 #include "classdata.h"
 
 /* encoder header */
 #include "encoder.h"
+
+#include <libraries/realtime.h>
 
 /*****************************************************************************/
 
@@ -482,11 +488,11 @@ BOOL GIFEncode( struct GIFEncoder *genc, struct GIFAnimInstData *gaid,
       /* ti_Tag is the attribute to check; ti_Data is the label written in front of the data */
       struct TagItem commentstags[] =
       {
-        { DTA_ObjName,       (ULONG)"name: "       },
-        { DTA_ObjAuthor,     (ULONG)"author: "     },
-        { DTA_ObjAnnotation, (ULONG)"annotation: " },
-        { DTA_ObjCopyright,  (ULONG)"copyright: "  },
-        { DTA_ObjVersion,    (ULONG)"version: "    },
+        { DTA_ObjName,       (IPTR)"name: "       },
+        { DTA_ObjAuthor,     (IPTR)"author: "     },
+        { DTA_ObjAnnotation, (IPTR)"annotation: " },
+        { DTA_ObjCopyright,  (IPTR)"copyright: "  },
+        { DTA_ObjVersion,    (IPTR)"version: "    },
         { TAG_DONE,          0UL                   }
       };
 

@@ -154,10 +154,10 @@ struct ClassBase
 #define INTDIVR( x, y ) (((x) + ((y) / 2)) / (y))
 
 /* Align memory on 4 byte boundary */
-#define ALIGN_LONG( mem ) ((APTR)((((ULONG)(mem)) + 3UL) & ~3UL))
+#define ALIGN_LONG( mem ) ((APTR)((((IPTR)(mem)) + 3UL) & ~3UL))
 
 /* Align memory on 16 byte boundary */
-#define ALIGN_QUADLONG( mem ) ((APTR)((((ULONG)(mem)) + 15UL) & ~15UL))
+#define ALIGN_QUADLONG( mem ) ((APTR)((((IPTR)(mem)) + 15UL) & ~15UL))
 
 /* Following ptr */
 #define MEMORY_FOLLOWING( ptr )     ((void *)((ptr) + 1))
