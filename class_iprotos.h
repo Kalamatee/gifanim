@@ -29,8 +29,8 @@ struct ColorMap *CMAP2ColorMap ( struct ClassBase *cb , ULONG anumcolors , UBYTE
 struct ColorMap *CopyColorMap ( struct ClassBase *cb , struct ColorMap *src );
 void WriteRGBPixelArray8 ( struct ClassBase *cb , struct BitMap *bm , ULONG animwidth , ULONG animheight , struct ColorRegister *cm , UBYTE *chunky );
 void CopyBitMap ( struct ClassBase *cb , struct BitMap *dest , struct BitMap *src , ULONG width , ULONG height );
-APTR AllocVecPooled ( struct ClassBase *cb , APTR pool , ULONG memsize );
-void FreeVecPooled ( struct ClassBase *cb , APTR pool , APTR mem );
+APTR AllocPooledVec ( struct ClassBase *cb , APTR pool , ULONG memsize );
+void FreePooledVec ( struct ClassBase *cb , APTR pool , APTR mem );
 
 /* encoder.c */
 ULONG SaveGIFAnim ( struct ClassBase *cb , struct IClass *cl , Object *o , struct dtWrite *dtw );
