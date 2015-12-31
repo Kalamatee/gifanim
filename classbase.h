@@ -34,7 +34,7 @@
 #include <graphics/gfx.h>
 #include <graphics/text.h>
 #include <graphics/scale.h>
-#include <cybergraphics/cybergraphics.h>
+#include <cybergraphx/cybergraphics.h>
 #include <intuition/classes.h>  /* must be $Id: classes.h,v 40.0 94/02/15 17:46:35 davidj Exp Locker: davidj $ */
 #include <intuition/classusr.h>
 #include <intuition/cghooks.h>
@@ -46,6 +46,7 @@
 #include <datatypes/animationclassext.h> /* animation.datatype V41 extensions */
 
 /* amiga prototypes */
+#ifdef __SASC
 #include <clib/macros.h>
 #include <clib/exec_protos.h>
 #include <clib/utility_protos.h>
@@ -55,6 +56,7 @@
 #include <clib/intuition_protos.h>
 #include <clib/datatypes_protos.h>
 #include <clib/dtclass_protos.h>
+
 #ifdef PARAMETERS_STACK
 #include <clib/alib_protos.h>
 #include <clib/alib_stdio_protos.h>
@@ -70,6 +72,16 @@
 #include <pragmas/datatypes_pragmas.h>
 #include <pragmas/dtclass_pragmas.h>
 #include <pragmas/alib_pragmas.h> /* amiga.lib stubs (tagcall pragmas) */
+#else
+#include <proto/exec.h>
+#include <proto/utility.h>
+#include <proto/dos.h>
+#include <proto/graphics.h>
+#include <proto/cybergraphics.h>
+#include <proto/intuition.h>
+#include <proto/datatypes.h>
+#include <proto/dtclass.h>
+#endif
 
 /* ANSI includes */
 #include <string.h>
@@ -105,7 +117,18 @@ struct ClassBase
 /* ... */
 #define REGA6 register  __a6
 #else
+#ifdef __GNUC__
+#define DISPATCHERFLAGS
+#define ASM
+#define REGD0
+#define REGA0
+#define REGA1
+#define REGA2
+#define REGA6
+#define __stdargs
+#else
 #error unsupported compiler
+#endif
 #endif /* __SASC */
 
 /*****************************************************************************/
@@ -161,13 +184,16 @@ struct ClassBase
 #define BMF_SPECIALFMT (1UL << BMB_SPECIALFMT)
 #endif /* BMB_SPECIALFMT */
 
+#if !defined(SHIFT_PIXFMT)
 #define SHIFT_PIXFMT( fmt ) (((ULONG)(fmt)) << 24UL)
+#endif
 
 #define CYBERGFXNAME     "cybergraphics.library"
 #define CYBERGFXVERSION  (40UL)
 
 /*****************************************************************************/
 
+#ifdef __SASC
 #ifndef PARAMETERS_STACK
 #define PARAMETERS_STACK 1
 #define  CLIB_ALIB_PROTOS_H
@@ -180,6 +206,7 @@ __stdargs ULONG CoerceMethodA( struct IClass *cl, Object *obj, Msg message );
 __stdargs ULONG CoerceMethod( struct IClass *cl, Object *obj, unsigned long MethodID, ... );
 __stdargs ULONG SetSuperAttrs( struct IClass *cl, Object *obj, unsigned long Tag1, ... );
 #endif /* !PARAMETERS_STACK */
+#endif
 
 /*****************************************************************************/
 

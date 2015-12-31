@@ -1,0 +1,12 @@
+#   $Id$
+include $(TOP)/config/make.cfg
+
+FILES := classbase stackswap dispatch prefs misc encoder
+
+#MM workbench-datatypes-gifanim : includes linklibs
+
+USER_CFLAGS   := -DMYDEBUG
+
+%build_module mmake=workbench-datatypes-gifanim \
+    modname=gifanim modtype=datatype \
+    files=$(FILES)
