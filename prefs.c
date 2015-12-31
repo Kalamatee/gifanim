@@ -11,6 +11,10 @@
 **
 */
 
+struct MyStackSwapStruct;
+struct GIFAnimInstData;
+struct GIFEncoder;
+
 /* main includes */
 #include "classbase.h"
 #include "classdata.h"
