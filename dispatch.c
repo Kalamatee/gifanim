@@ -11,6 +11,9 @@
 **
 */
 
+struct MyStackSwapStruct;
+struct GIFAnimInstData;
+
 /* main includes */
 #include "classbase.h"
 #include "classdata.h"
@@ -64,12 +67,15 @@ struct IClass *initClass( struct ClassBase *cb )
     /* Create our class... */
     if( cl = MakeClass( GIFANIMDTCLASS, ANIMATIONDTCLASS, NULL, (ULONG)sizeof( struct GIFAnimInstData ), 0UL ) )
     {
+#if defined (__AROS__)
+      cl -> cl_Dispatcher . h_Entry = (HOOKFUNC)Dispatch;
+#else
 #define DTSTACKSIZE (16384UL)
       cl -> cl_Dispatcher . h_Entry    = (HOOKFUNC)StackSwapDispatch; /* see stackswap.c */
       cl -> cl_Dispatcher . h_SubEntry = (HOOKFUNC)Dispatch;          /* see stackswap.c */
       cl -> cl_Dispatcher . h_Data     = (APTR)DTSTACKSIZE;           /* see stackswap.c */
       cl -> cl_UserData                = (ULONG)cb;
-
+#endif
       AddClass( cl );
     }
 
@@ -417,7 +423,7 @@ ULONG Dispatch( REGA0 struct IClass *cl, REGA2 Object *o, REGA1 Msg msg )
                       animheight = (ULONG)(gaid -> gaid_Height);
 
                 /* Allocate array for chunkypixel data */
-                if( fn -> fn_ChunkyMap = (UBYTE *)AllocVecPooled( cb, (gaid -> gaid_Pool), ((animwidth * animheight) + 256) ) )
+                if( fn -> fn_ChunkyMap = (UBYTE *)AllocPooledVec( cb, (gaid -> gaid_Pool), ((animwidth * animheight) + 256) ) )
                 {
                   /* Get a clean background to avoid that rubbish shows througth transparent parts */
                   memset( (fn -> fn_ChunkyMap), 0, (size_t)(animwidth * animheight) );
@@ -739,7 +745,7 @@ ULONG Dispatch( REGA0 struct IClass *cl, REGA2 Object *o, REGA1 Msg msg )
                 if( ((fn -> fn_UseCount) == 0) && (fn -> fn_BitMap) && (fn != (struct FrameNode *)(gaid -> gaid_FrameList . mlh_Head)) )
                 {
                   FreeFrameBitMap( cb, gaid, (fn -> fn_BitMap) );
-                  FreeVecPooled( cb, (gaid -> gaid_Pool), (fn -> fn_ChunkyMap) );
+                  FreePooledVec( cb, (gaid -> gaid_Pool), (fn -> fn_ChunkyMap) );
                   fn -> fn_BitMap    = NULL;
                   fn -> fn_ChunkyMap = NULL;
                 }
@@ -975,7 +981,7 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
                                 }
 
                                 /* Allocate array for chunkypixel data */
-                                if( fn -> fn_ChunkyMap = (UBYTE *)AllocVecPooled( cb, (gaid -> gaid_Pool), ((animwidth * animheight) + 256) ) )
+                                if( fn -> fn_ChunkyMap = (UBYTE *)AllocPooledVec( cb, (gaid -> gaid_Pool), ((animwidth * animheight) + 256) ) )
                                 {
                                   /* Get a clean background to avoid that rubbish shows througth transparent parts */
                                   memset( (fn -> fn_ChunkyMap), 0, (size_t)(animwidth * animheight) );
@@ -1613,7 +1619,7 @@ void FreeFrameBitMap( struct ClassBase *cb, struct GIFAnimInstData *gaid, struct
       }
       else
       {
-        FreeVecPooled( cb, (gaid -> gaid_Pool), bm );
+        FreePooledVec( cb, (gaid -> gaid_Pool), bm );
       }
     }
 }
@@ -1631,7 +1637,7 @@ struct BitMap *AllocBitMapPooled( struct ClassBase *cb, ULONG width, ULONG heigh
     planesize = (ULONG)RASSIZE( width, height ) + 16UL;
     size      = ((ULONG)sizeof( struct BitMap )) + (planesize * depth) + width;
 
-    if( bm = (struct BitMap *)AllocVecPooled( cb, pool, size ) )
+    if( bm = (struct BitMap *)AllocPooledVec( cb, pool, size ) )
     {
       UWORD    pl;
       PLANEPTR plane;
