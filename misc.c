@@ -11,6 +11,10 @@
 **
 */
 
+struct MyStackSwapStruct;
+struct GIFAnimInstData;
+struct GIFEncoder;
+
 /* main includes */
 #include "classbase.h"
 
@@ -327,7 +331,7 @@ void CopyBitMap( struct ClassBase *cb, struct BitMap *dest, struct BitMap *src, 
 /*****************************************************************************/
 
 /* allocate a piece of memory from an exec memory pool and track the allocation size */
-APTR AllocVecPooled( struct ClassBase *cb, APTR pool, ULONG memsize )
+APTR AllocPooledVec( struct ClassBase *cb, APTR pool, ULONG memsize )
 {
     ULONG *memory = NULL;
 
@@ -347,7 +351,7 @@ APTR AllocVecPooled( struct ClassBase *cb, APTR pool, ULONG memsize )
 }
 
 
-void FreeVecPooled( struct ClassBase *cb, APTR pool, APTR mem )
+void FreePooledVec( struct ClassBase *cb, APTR pool, APTR mem )
 {
     if( pool && mem )
     {
