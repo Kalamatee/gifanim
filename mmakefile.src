@@ -1,7 +1,8 @@
 #   $Id$
 include $(TOP)/config/make.cfg
 
-FILES := classbase stackswap dispatch prefs misc encoder
+FILES := classbase dispatch prefs misc encoder
+#FILES stackswap 
 
 #MM workbench-datatypes-gifanim : includes linklibs
 
