@@ -81,6 +81,8 @@
 #include <proto/intuition.h>
 #include <proto/datatypes.h>
 #include <proto/dtclass.h>
+
+#include <clib/alib_protos.h>
 #endif
 
 /* ANSI includes */
@@ -142,6 +144,11 @@ struct ClassBase
 #define DataTypesBase  (cb -> cb_DataTypesBase)
 
 /*****************************************************************************/
+
+#if defined(__AROS__)
+#define	MIN(a,b) (((a) < (b)) ?	(a) : (b))
+#define	MAX(a,b) (((a) > (b)) ?	(a) : (b))
+#endif
 
 /* integer division, rounded */
 #define INTDIVR( x, y ) (((x) + ((y) / 2)) / (y))
