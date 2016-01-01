@@ -569,12 +569,16 @@ DISPATCHERFLAGS
 struct Library *LibInit( REGD0 struct ClassBase *cb, REGA0 BPTR seglist, REGA6 struct ExecBase *sysbase )
 {
     cb -> cb_SegList = seglist;
+#if !defined(__AROS__)
     cb -> cb_SysBase = sysbase;
+#endif
 
     InitSemaphore( (&(cb -> cb_Lock)) );
 
+#if !defined(__AROS__)
     /* Kickstart V3.0 ? */
     if( (cb -> cb_SysBase -> LibNode . lib_Version) >= 39UL )
+#endif
     {
       /* Obtain ROM libs */
       if( cb -> cb_UtilityBase = OpenLibrary( "utility.library", 39UL ) )

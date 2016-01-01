@@ -93,7 +93,9 @@
 struct ClassBase
 {
     struct ClassLibrary     cb_Lib;
+#if !defined(__AROS__)
     struct ExecBase        *cb_SysBase;
+#endif
     struct Library         *cb_UtilityBase;
     struct Library         *cb_DOSBase;
     struct Library         *cb_GfxBase;
@@ -135,7 +137,9 @@ struct ClassBase
 
 /*****************************************************************************/
 
+#if !defined(__AROS__)
 #define SysBase        (cb -> cb_SysBase)
+#endif
 #define UtilityBase    (cb -> cb_UtilityBase)
 #define DOSBase        (cb -> cb_DOSBase)
 #define GfxBase        (cb -> cb_GfxBase)
