@@ -3,8 +3,9 @@ include $(TOP)/config/make.cfg
 
 FILES := classbase methods dispatch prefs misc encoder
 #FILES stackswap 
+TESTSDIR := $(AROS_TESTS)/datatypes
 
-#MM workbench-datatypes-gifanim : includes linklibs
+#MM workbench-datatypes-gifanim : includes linklibs workbench-datatypes-gifanim-testfiles
 
 USER_CFLAGS   := -DMYDEBUG
 USER_LDFLAGS := -static
@@ -12,3 +13,7 @@ USER_LDFLAGS := -static
 %build_module mmake=workbench-datatypes-gifanim \
     modname=gifanim modtype=datatype \
     files=$(FILES)
+
+%copy_files_q mmake=workbench-datatypes-gifanim-testfiles files="fish.gif" dst=$(TESTSDIR)
+
+%common

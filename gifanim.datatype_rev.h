@@ -1,6 +1,6 @@
 #define	VERSION		2
-#define	REVISION	3
-#define	DATE	"24.5.98"
-#define	VERS	"gifanim.datatype 2.3"
-#define	VSTRING	"gifanim.datatype 2.3 (24.5.98)\r\n"
-#define	VERSTAG	"\0$VER: gifanim.datatype 2.3 (24.5.98)"
+#define	REVISION	4
+#define	DATE	"01.01.16"
+#define	VERS	"gifanim.datatype 2.4"
+#define	VSTRING	"gifanim.datatype 2.4 (01.01.16)\r\n"
+#define	VERSTAG	"\0$VER: gifanim.datatype 2.4 (01.01.16)"
