@@ -11,6 +11,9 @@
 **
 */
 
+#define DEBUG 1
+#include <aros/debug.h>
+
 /* main includes */
 #include "classbase.h"
 
@@ -565,12 +568,20 @@ struct IClass *ObtainGIFAnimEngine( REGA6 struct ClassBase *cb )
 
 /*****************************************************************************/
 
+#if !defined(__AROS__)
 DISPATCHERFLAGS
 struct Library *LibInit( REGD0 struct ClassBase *cb, REGA0 BPTR seglist, REGA6 struct ExecBase *sysbase )
 {
     cb -> cb_SegList = seglist;
-#if !defined(__AROS__)
+
     cb -> cb_SysBase = sysbase;
+#else
+/* Open superclass */
+ADD2LIBS("datatypes/animation.datatype", 0, struct Library *, AnimationBase);
+
+static int LibInit(struct ClassBase *cb)
+{
+    bug("[gifanim.datatype] %s()\n", __PRETTY_FUNCTION__);
 #endif
 
     InitSemaphore( (&(cb -> cb_Lock)) );
@@ -578,7 +589,6 @@ struct Library *LibInit( REGD0 struct ClassBase *cb, REGA0 BPTR seglist, REGA6 s
 #if !defined(__AROS__)
     /* Kickstart V3.0 ? */
     if( (cb -> cb_SysBase -> LibNode . lib_Version) >= 39UL )
-#endif
     {
       /* Obtain ROM libs */
       if( cb -> cb_UtilityBase = OpenLibrary( "utility.library", 39UL ) )
@@ -610,10 +620,14 @@ struct Library *LibInit( REGD0 struct ClassBase *cb, REGA0 BPTR seglist, REGA6 s
     }
 
     return( NULL );
+#else
+    return TRUE;
+#endif
 }
 
 /*****************************************************************************/
 
+#if !defined(__AROS__)
 DISPATCHERFLAGS
 LONG LibOpen( REGA6 struct ClassBase *cb )
 {
@@ -731,5 +745,6 @@ LONG LibExpunge( REGA6 struct ClassBase *cb )
 
     return( (LONG)seg );
 }
-
-
+#else
+ADD2INITLIB(LibInit, 0);
+#endif
