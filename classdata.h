@@ -147,7 +147,7 @@ struct GIFAnimInstData
     BPTR                    gaid_VerboseOutput;   /* Verbose output. -1 means: Avoid any output (NOVERBOSE option) */
 
     /* Prefs */
-    ULONG                   gaid_ModeID;
+    IPTR                   gaid_ModeID;
     BOOL                    gaid_LoadAll;         /* Load all frames of the animation        */
     BOOL                    gaid_FPS;             /* fps of stream (maybe modified by prefs) */
     BOOL                    gaid_UseChunkyMap;
