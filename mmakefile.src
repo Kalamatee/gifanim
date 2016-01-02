@@ -5,15 +5,16 @@ FILES := classbase methods dispatch prefs misc encoder
 #FILES stackswap 
 TESTSDIR := $(AROS_TESTS)/datatypes
 
-#MM workbench-datatypes-gifanim : includes linklibs workbench-datatypes-gifanim-testfiles
+#MM- workbench-datatypes-animation : workbench-datatype-gifanim
+#MM workbench-datatype-gifanim : includes linklibs workbench-datatype-gifanim-testfiles
 
 USER_CFLAGS   := -DMYDEBUG
 USER_LDFLAGS := -static
 
-%build_module mmake=workbench-datatypes-gifanim \
+%build_module mmake=workbench-datatype-gifanim \
     modname=gifanim modtype=datatype \
     files=$(FILES)
 
-%copy_files_q mmake=workbench-datatypes-gifanim-testfiles files="fish.gif" dst=$(TESTSDIR)
+%copy_files_q mmake=workbench-datatype-gifanim-testfiles files="fish.gif" dst=$(TESTSDIR)
 
 %common
