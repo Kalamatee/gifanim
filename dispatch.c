@@ -52,6 +52,7 @@ static void                 AttachSample( struct ClassBase *, struct GIFAnimInst
 
 /*****************************************************************************/
 
+#if !defined (__AROS__)
 /* Create "gifanim.datatype" BOOPSI class */
 struct IClass *initClass( struct ClassBase *cb )
 {
@@ -60,23 +61,18 @@ struct IClass *initClass( struct ClassBase *cb )
     /* Create our class... */
     if( cl = MakeClass( GIFANIMDTCLASS, ANIMATIONDTCLASS, NULL, (ULONG)sizeof( struct GIFAnimInstData ), 0UL ) )
     {
-#if defined(__AROS__)
-      cl -> cl_Dispatcher . h_Entry = (HOOKFUNC)Dispatch;          /* see stackswap.c */
-#else
       cl -> cl_Dispatcher . h_Entry = (HOOKFUNC)Dispatch;
 #define DTSTACKSIZE (16384UL)
       cl -> cl_Dispatcher . h_Entry    = (HOOKFUNC)StackSwapDispatch; /* see stackswap.c */
       cl -> cl_Dispatcher . h_SubEntry = (HOOKFUNC)Dispatch;          /* see stackswap.c */
       cl -> cl_Dispatcher . h_Data     = (APTR)DTSTACKSIZE;           /* see stackswap.c */
-#endif
-      cl -> cl_UserData                = (ULONG)cb;
+      cl -> cl_UserData                = cb;
       AddClass( cl );
     }
 
     return( cl );
 }
 
-#if !defined (__AROS__)
 #include "methods.h"
 
 /* class dispatcher */
@@ -182,7 +178,7 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
                 if( lock = DupLockFromFH( fh ) )
                 {
                   /* Set up a filehandle for disk-based loading (random loading) */
-                  if( gaid -> gaid_FH = (LONG)OpenFromLock( lock ) )
+                  if( gaid -> gaid_FH = (BPTR)OpenFromLock( lock ) )
                   {
                     success = TRUE;
                   }
@@ -198,7 +194,7 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
               if( (gaid -> gaid_FH) == NULL )
               {
                 /* Set up a filehandle for disk-based loading (random loading) */
-                if( gaid -> gaid_FH = (LONG)Open( (gaid -> gaid_ProjectName), MODE_OLDFILE ) )
+                if( gaid -> gaid_FH = (BPTR)Open( (gaid -> gaid_ProjectName), MODE_OLDFILE ) )
                 {
                   success = TRUE;
                 }
@@ -1109,10 +1105,10 @@ void AttachSample( struct ClassBase *cb, struct GIFAnimInstData *gaid )
         sample += worknode -> fn_SampleLength;
 
         /* End of sample reached ? */
-        if( (ULONG)(sample - (gaid -> gaid_Sample)) > (gaid -> gaid_SampleLength) )
+        if( (IPTR)(sample - (gaid -> gaid_Sample)) > (gaid -> gaid_SampleLength) )
         {
           /* Cut last size of sample to fit */
-          worknode -> fn_SampleLength -= (ULONG)(sample - (gaid -> gaid_Sample));
+          worknode -> fn_SampleLength -= (IPTR)(sample - (gaid -> gaid_Sample));
 
           break;
         }

@@ -1,15 +1,19 @@
 
 /* classbase.c */
 DISPATCHERFLAGS struct IClass *ObtainGIFAnimEngine ( REGA6 struct ClassBase *cb );
+#if !defined(__AROS__)
 DISPATCHERFLAGS struct Library *LibInit ( REGD0 struct ClassBase *cb , REGA0 BPTR seglist , REGA6 struct ExecBase *sysbase );
 DISPATCHERFLAGS LONG LibOpen ( REGA6 struct ClassBase *cb );
 DISPATCHERFLAGS LONG LibClose ( REGA6 struct ClassBase *cb );
+#endif
 DISPATCHERFLAGS LONG LibExpunge ( REGA6 struct ClassBase *cb );
 
+#if !defined(__AROS__)
 /* stackswap.c */
 DISPATCHERFLAGS ULONG StackSwapDispatch ( REGA0 struct IClass *cl , REGA2 Object *o , REGA1 Msg msg );
 DISPATCHERFLAGS ULONG SwapMe ( REGA0 struct MyStackSwapStruct *mystk );
 DISPATCHERFLAGS ULONG MyDispatch ( REGA0 struct MyStackSwapStruct *mystk );
+#endif
 
 /* dispatch.c */
 struct IClass *initClass ( struct ClassBase *cb );
