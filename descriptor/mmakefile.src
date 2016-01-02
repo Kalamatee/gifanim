@@ -1,0 +1,23 @@
+# Copyright © 2015, The AROS Development Team. All rights reserved.
+# $Id$
+
+include $(TOP)/config/make.cfg
+
+DTDIR 		:= $(AROS_DEVS)/DataTypes
+FILES 		:= GIFANIM
+
+DTFILES		:= $(foreach f, $(FILES), $(DTDIR)/$(f))
+
+#MM- workbench-datatypes-gifanim : workbench-datatype-gifanim
+#MM workbench-datatype-gifanim : workbench-devs-datatypes
+
+#MM
+workbench-datatype-gifanim : $(DTFILES)
+
+#MM
+workbench-datatype-gifanim-quick : workbench-datatype-gifanim
+
+$(DTDIR)/% : $(SRCDIR)/$(CURDIR)/%.dtd
+	cd $(DTDIR) && $(CREATEDTDESC) $<
+	
+%common
