@@ -1,5 +1,20 @@
+/*
+**
+**  $VER: methods.c 2.4 (01.01.2016)
+**  gifanim.datatype 2.4
+**
+**  DataTypes class method implementations
+**
+**  Written 1997/1998 by Roland 'Gizzy' Mainz
+**
+*/
+
+#define DEBUG 1
+#include <aros/debug.h>
+
 struct MyStackSwapStruct;
 struct GIFAnimInstData;
+struct GIFEncoder;
 
 /* main includes */
 #include "classbase.h"
@@ -55,8 +70,10 @@ struct Gadget *DT_NewMethod(struct IClass *cl, Object *o, struct opSet *msg)
     struct TagItem *ti;
     IPTR retval;
 
+    D(bug("[gifanim.datatype]: %s()\n", __PRETTY_FUNCTION__));
+
     /* We only support DTST_FILE or DTST_RAM as source type */
-    if( ti = FindTagItem( DTA_SourceType, (((struct opSet *)msg) -> ops_AttrList) ) )
+    if ((ti = FindTagItem( DTA_SourceType, (((struct opSet *)msg) -> ops_AttrList) )) != NULL)
     {
         if( ((ti -> ti_Data) != DTST_FILE) && ((ti -> ti_Data) != DTST_RAM) )
         {
@@ -68,14 +85,20 @@ struct Gadget *DT_NewMethod(struct IClass *cl, Object *o, struct opSet *msg)
 
     if( retval = DoSuperMethodA( cl, o, msg ) )
     {
+        D(bug("[gifanim.datatype] %s: dtobject @ 0x%p\n", __PRETTY_FUNCTION__, retval));
         /* Load frames... */
         if( !ScanFrames( cb, (Object *)retval ) )
         {
+            D(bug("[gifanim.datatype] %s: failed to scan file\n", __PRETTY_FUNCTION__));
+
             /* Something went fatally wrong, dispose object */
             CoerceMethod( cl, (Object *)retval, OM_DISPOSE );
             retval = 0UL;
         }
     }
+
+    D(bug("[gifanim.datatype] %s: returning 0x%p\n", __PRETTY_FUNCTION__, retval));
+
     return (struct Gadget *)retval;
 }
 
@@ -123,9 +146,9 @@ IPTR DT_DisposeMethod(struct IClass *cl, Object *o, Msg msg)
     }
 
     /* Close verbose output file */
-    if( (gaid -> gaid_VerboseOutput) && ((gaid -> gaid_VerboseOutput) != -1L) )
+    if ((gaid->gaid_VerboseOutput) && (gaid->gaid_VerboseOutput != (APTR)-1L))
     {
-        Close( (gaid -> gaid_VerboseOutput) );
+        Close(gaid->gaid_VerboseOutput);
     }
 
     /* Dispose object */
@@ -327,7 +350,7 @@ IPTR DT_LoadFrame(struct IClass *cl, Object *o, struct adtFrame *alf)
     }
 
     /* Find frame by timestamp */
-    if( fn = FindFrameNode( (&(gaid -> gaid_FrameList)), (alf -> alf_TimeStamp) ) )
+    if ((fn = FindFrameNode( (&(gaid -> gaid_FrameList)), (alf -> alf_TimeStamp) )) != NULL)
     {
         /* Load bitmaps only if we don't cache the whole anim and
          * if we have a filehandle to load from (an empty object created using DTST_RAM won't have this)...
@@ -341,12 +364,12 @@ IPTR DT_LoadFrame(struct IClass *cl, Object *o, struct adtFrame *alf)
                   animheight = (ULONG)(gaid -> gaid_Height);
 
             /* Allocate array for chunkypixel data */
-            if( fn -> fn_ChunkyMap = (UBYTE *)AllocPooledVec( cb, (gaid -> gaid_Pool), ((animwidth * animheight) + 256) ) )
+            if ((fn->fn_ChunkyMap = (UBYTE *)AllocPooledVec( cb, (gaid -> gaid_Pool), ((animwidth * animheight) + 256) )) != NULL)
             {
-              /* Get a clean background to avoid that rubbish shows througth transparent parts */
+              /* Get a clean background to prevent garbage showing througth transparent parts */
               memset( (fn -> fn_ChunkyMap), 0, (size_t)(animwidth * animheight) );
 
-              if( fn -> fn_BitMap = AllocFrameBitMap( cb, gaid ) )
+              if ((fn->fn_BitMap = AllocFrameBitMap( cb, gaid )) != NULL)
               {
                 struct FrameNode *worknode = fn;
                 struct FrameNode *prevnode = NULL;
@@ -398,7 +421,7 @@ IPTR DT_LoadFrame(struct IClass *cl, Object *o, struct adtFrame *alf)
                   {
                     if( Seek( (gaid -> gaid_FH), ((worknode -> fn_BMOffset) - (gaid -> gaid_CurrFilePos)), OFFSET_CURRENT ) != (-1L) )
                     {
-                      if( gifdec -> file_buffer = AllocVec( ((worknode -> fn_BMSize) + 16UL), MEMF_PUBLIC ) )
+                      if ((gifdec->file_buffer = AllocVec( ((worknode -> fn_BMSize) + 16UL), MEMF_PUBLIC )) !=NULL)
                       {
                         BOOL   useGlobalColormap;
                         UWORD  bitPixel;
