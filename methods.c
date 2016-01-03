@@ -127,6 +127,8 @@ IPTR DT_DisposeMethod(struct IClass *cl, Object *o, Msg msg)
     struct ClassBase        *cb = (struct ClassBase *)(cl -> cl_UserData);
     LONG saved_ioerr = IoErr();
 
+    D(bug("[gifanim.datatype]: %s()\n", __PRETTY_FUNCTION__));
+
     /* Wait for any outstanding blitter usage (which may use one of our bitmaps) */
     WaitBlit();
 
@@ -167,6 +169,8 @@ IPTR DT_FrameBox(struct IClass *cl, Object *o, struct dtFrameBox *msg)
     struct dtFrameBox *dtf = (struct dtFrameBox *)msg;
     IPTR retval;
 
+    D(bug("[gifanim.datatype]: %s()\n", __PRETTY_FUNCTION__));
+
     /* pass to superclas first */
     retval = DoSuperMethodA( cl, o, (Msg) msg );
 
@@ -200,6 +204,8 @@ IPTR DT_SetMethod(struct IClass *cl, Object *o, struct opSet *msg)
 {
     struct ClassBase        *cb = (struct ClassBase *)(cl -> cl_UserData);
     IPTR retval;
+
+    D(bug("[gifanim.datatype]: %s()\n", __PRETTY_FUNCTION__));
 
 #if (0)
     if( DoMethod( o, ICM_CHECKLOOP ) )
@@ -289,6 +295,8 @@ IPTR DT_Write(struct IClass *cl, Object *o, struct dtWrite *dtw)
     struct ClassBase        *cb = (struct ClassBase *)(cl -> cl_UserData);
     IPTR retval;
 
+    D(bug("[gifanim.datatype]: %s()\n", __PRETTY_FUNCTION__));
+
     /* Local data format requested ?... */
     if( (dtw -> dtw_Mode) == DTWM_RAW )
     {
@@ -331,6 +339,8 @@ IPTR DT_LoadFrame(struct IClass *cl, Object *o, struct adtFrame *alf)
     struct FrameNode *fn;
     LONG              error       = 0L;
     IPTR retval = 0;
+
+    D(bug("[gifanim.datatype]: %s()\n", __PRETTY_FUNCTION__));
 
     ObtainSemaphore( (&(gaid -> gaid_SigSem)) );
 
@@ -669,6 +679,8 @@ IPTR DT_UnLoadFrame(struct IClass *cl, Object *o, struct adtFrame *alf)
     struct ClassBase        *cb = (struct ClassBase *)(cl -> cl_UserData);
     struct GIFAnimInstData *gaid = (struct GIFAnimInstData *)INST_DATA( cl, o );
     struct FrameNode *fn;
+
+    D(bug("[gifanim.datatype]: %s()\n", __PRETTY_FUNCTION__));
 
     /* Free bitmaps only if we don't cache the whole anim */
     if( (gaid -> gaid_LoadAll) == FALSE )

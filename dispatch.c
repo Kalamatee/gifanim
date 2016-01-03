@@ -1,8 +1,8 @@
 
 /*
 **
-**  $VER: dispatch.c 2.3 (24.5.98)
-**  gifanim.datatype 2.3
+**  $VER: dispatch.c 2.4 (24.5.98)
+**  gifanim.datatype 2.4
 **
 **  Dispatch routine for a DataTypes class
 **
@@ -301,7 +301,7 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
                       gifdec -> GifScreen . Background = 0U;
                     }
 
-                    for( ;; )
+                    while (TRUE)
                     {
                         D(bug("[gifanim.datatype]: %s: reading chunk..\n", __PRETTY_FUNCTION__));
                       /* Read chunk ID char */
@@ -355,6 +355,7 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
                               {
                                 if( !(fn -> fn_BitMap = AllocFrameBitMap( cb, gaid ) ) )
                                 {
+                                    D(bug("[gifanim.datatype]: %s: failed to allocate bitmap!\n", __PRETTY_FUNCTION__));
                                   error = ERROR_NO_FREE_STORE;
                                 }
 
@@ -366,6 +367,7 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
                                 }
                                 else
                                 {
+                                    D(bug("[gifanim.datatype]: %s: failed to allocate chunky data!\n", __PRETTY_FUNCTION__));
                                   error = ERROR_NO_FREE_STORE;
                                 }
                               }
@@ -533,6 +535,7 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
                                   {
                                     if( !CMAP2Object( cb, o, (UBYTE *)localColorMap, (ULONG)(bitPixel * 3UL) ) )
                                     {
+                                        D(bug("[gifanim.datatype]: %s: failed to allocate object cmap!\n", __PRETTY_FUNCTION__));
                                       /* can't alloc object's color table */
                                       error = ERROR_NO_FREE_STORE;
                                     }
@@ -541,6 +544,7 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
                                   /* Create a palette-per-frame colormap here */
                                   if( !(fn -> fn_CMap = CMAP2ColorMap( cb, (1UL << (ULONG)(gaid -> gaid_Depth)), (UBYTE *)localColorMap, (ULONG)(bitPixel * 3UL) )) )
                                   {
+                                      D(bug("[gifanim.datatype]: %s: failed to allocate frame cmap!\n", __PRETTY_FUNCTION__));
                                     /* can't alloc colormap */
                                     error = ERROR_NO_FREE_STORE;
                                   }
@@ -628,11 +632,14 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
                       /* on error break */
                       if( error )
                       {
+                          D(bug("[gifanim.datatype]: %s: ERROR!\n", __PRETTY_FUNCTION__));
                         break;
                       }
                     }
 
 scandone:
+                    D(bug("[gifanim.datatype]: %s: scan done\n", __PRETTY_FUNCTION__));
+
                     /* Any frames ? */
                     if( timestamp && (error == 0L) && numcmaps )
                     {
@@ -1415,8 +1422,6 @@ int GetCode( struct ClassBase *cb, struct GIFAnimInstData *gaid, int code_size, 
                        j,
                        ret;
     UBYTE              count;
-
-    D(bug("[gifanim.datatype]: %s()\n", __PRETTY_FUNCTION__));
 
     if( flag )
     {
