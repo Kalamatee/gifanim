@@ -211,7 +211,6 @@ BOOL matchstr( struct ClassBase *cb, STRPTR pat, STRPTR s )
     return( FALSE );
 }
 
-
 void ReadENVPrefs( struct ClassBase *cb, struct GIFAnimInstData *gaid, struct GIFEncoder *genc )
 {
     struct RDArgs envvarrda =
@@ -359,9 +358,9 @@ void ReadENVPrefs( struct ClassBase *cb, struct GIFAnimInstData *gaid, struct GI
                   gaid -> gaid_ModeID = *(gifanimargs . modeid);
                 }
 
-#if !defined(__AROS__)
                 if( gifanimargs . use24bitchunky )
                 {
+#if !defined(__AROS__)
                   /* Check if we have animation.datatype V41 (or higher) as superclass */
                   if( (cb -> cb_SuperClassBase -> lib_Version) >= 41U )
                   {
@@ -370,7 +369,9 @@ void ReadENVPrefs( struct ClassBase *cb, struct GIFAnimInstData *gaid, struct GI
                      */
                     if( CyberGfxBase )
                     {
+#endif
                       gaid -> gaid_UseChunkyMap = TRUE;
+#if !defined(__AROS__)
                     }
                     else
                     {
@@ -381,10 +382,8 @@ void ReadENVPrefs( struct ClassBase *cb, struct GIFAnimInstData *gaid, struct GI
                   {
                     error_printf( cb, gaid, "Requires at least animation.datatype V41 for non-planar bitmap support\n" );
                   }
-                }
-#else
-                      gaid -> gaid_UseChunkyMap = TRUE;
 #endif
+                }
                 if( gifanimargs . nouse24bitchunky )
                 {
                   gaid -> gaid_UseChunkyMap = FALSE;
