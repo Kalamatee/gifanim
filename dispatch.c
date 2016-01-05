@@ -1777,6 +1777,7 @@ void WriteDeltaPixelArray8Fast( struct BitMap *dest, UBYTE *source, UBYTE *prev 
     /* Copy plane ptrs */
     for( i = 0UL ; i < (dest -> Depth) ; i++ )
     {
+        D(bug("[gifanim.datatype] %s: plane %d @ 0x%p\n", __PRETTY_FUNCTION__, i, dest -> Planes[ i ]));
       plane[ i ] = (ULONG *)(dest -> Planes[ i ]);
     }
 
@@ -1796,7 +1797,8 @@ void WriteDeltaPixelArray8Fast( struct BitMap *dest, UBYTE *source, UBYTE *prev 
     /* Check if we have to do the "delta" test */
     if( prevchunky )
     {
-      /* Process bitmaps */
+#if !defined(__AROS__)
+        /* Process bitmaps */
       for( i = 0UL ; i < numcycles ; i++ )
       {
         ULONG curr0, curr1, curr2, curr3, curr4, curr5, curr6, curr7;
@@ -1804,6 +1806,7 @@ void WriteDeltaPixelArray8Fast( struct BitMap *dest, UBYTE *source, UBYTE *prev 
         ULONG tmp;
 
         /* process 32 pixels */
+
         curr0 = *chunky++;  curr4 = *chunky++;
         curr1 = *chunky++;  curr5 = *chunky++;
         curr2 = *chunky++;  curr6 = *chunky++;
@@ -1868,9 +1871,84 @@ void WriteDeltaPixelArray8Fast( struct BitMap *dest, UBYTE *source, UBYTE *prev 
           plane[ 0 ]++;
         }
       }
+#else
+     for( i = 0UL ; i < numcycles ; i++ )
+      {
+        ULONG curr0, curr1, curr2, curr3, curr4, curr5, curr6, curr7;
+        ULONG prev0, prev1, prev2, prev3, prev4, prev5, prev6, prev7;
+        ULONG tmp;
+
+        /* process 32 pixels */
+
+        curr0 = *chunky++;  curr4 = *chunky++;
+        curr1 = *chunky++;  curr5 = *chunky++;
+        curr2 = *chunky++;  curr6 = *chunky++;
+        curr3 = *chunky++;  curr7 = *chunky++;
+
+        prev0 = *prevchunky++;  prev4 = *prevchunky++;
+        prev1 = *prevchunky++;  prev5 = *prevchunky++;
+        prev2 = *prevchunky++;  prev6 = *prevchunky++;
+        prev3 = *prevchunky++;  prev7 = *prevchunky++;
+
+        /* I use the '+' here to avoid that the compiler skips an expression.
+         * WARNING: The code assumes that the code is executed in the sequence as it occurs here
+         */
+        if ( (curr0 != prev0) || (curr4 != prev4) ||
+            (curr1 != prev1) || (curr5 != prev5) ||
+            (curr2 != prev2) || (curr6 != prev6) ||
+            (curr3 != prev3) || (curr7 != prev7))
+        {
+          merge( curr0, curr2, 0x0000ffff, 16 );
+          merge( curr1, curr3, 0x0000ffff, 16 );
+          merge( curr4, curr6, 0x0000ffff, 16 );
+          merge( curr5, curr7, 0x0000ffff, 16 );
+
+          merge( curr0, curr1, 0x00ff00ff,  8 );
+          merge( curr2, curr3, 0x00ff00ff,  8 );
+          merge( curr4, curr5, 0x00ff00ff,  8 );
+          merge( curr6, curr7, 0x00ff00ff,  8 );
+
+          merge( curr0, curr4, 0x0f0f0f0f,  4 );
+          merge( curr1, curr5, 0x0f0f0f0f,  4 );
+          merge( curr2, curr6, 0x0f0f0f0f,  4 );
+          merge( curr3, curr7, 0x0f0f0f0f,  4 );
+
+          merge( curr0, curr2, 0x33333333,  2 );
+          merge( curr1, curr3, 0x33333333,  2 );
+          merge( curr4, curr6, 0x33333333,  2 );
+          merge( curr5, curr7, 0x33333333,  2 );
+
+          merge( curr0, curr1, 0x55555555,  1 );
+          merge( curr2, curr3, 0x55555555,  1 );
+          merge( curr4, curr5, 0x55555555,  1 );
+          merge( curr6, curr7, 0x55555555,  1 );
+
+          *plane[ 7 ]++ = curr0;
+          *plane[ 6 ]++ = curr1;
+          *plane[ 5 ]++ = curr2;
+          *plane[ 4 ]++ = curr3;
+          *plane[ 3 ]++ = curr4;
+          *plane[ 2 ]++ = curr5;
+          *plane[ 1 ]++ = curr6;
+          *plane[ 0 ]++ = curr7;
+        }
+        else
+        {
+          plane[ 7 ]++;
+          plane[ 6 ]++;
+          plane[ 5 ]++;
+          plane[ 4 ]++;
+          plane[ 3 ]++;
+          plane[ 2 ]++;
+          plane[ 1 ]++;
+          plane[ 0 ]++;
+        }
+      }
+#endif
     }
     else
     {
+#if !defined(__AROS__)
       /* Process bitmaps */
       for( i = 0UL ; i < numcycles ; i++ )
       {
@@ -1917,6 +1995,20 @@ void WriteDeltaPixelArray8Fast( struct BitMap *dest, UBYTE *source, UBYTE *prev 
         *plane[ 1 ]++ = b6;
         *plane[ 0 ]++ = b7;
       }
+#else
+        ULONG x, width = GetBitMapAttr(dest, BMA_WIDTH);
+        struct RastPort rp = { 0 };
+        InitRastPort( (&rp) );
+        rp.BitMap = dest;
+        for ( i = 0; i < dest->Rows; i ++)
+        {
+            for (x = 0; x < width; x++)
+            {
+                SetAPen(&rp, source[(i * width) + x]);
+                WritePixel(&rp, x, i);
+            }
+        }
+#endif
     }
 }
 
