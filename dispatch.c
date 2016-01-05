@@ -1797,7 +1797,6 @@ void WriteDeltaPixelArray8Fast( struct BitMap *dest, UBYTE *source, UBYTE *prev 
     /* Check if we have to do the "delta" test */
     if( prevchunky )
     {
-#if !defined(__AROS__)
         /* Process bitmaps */
       for( i = 0UL ; i < numcycles ; i++ )
       {
@@ -1807,88 +1806,15 @@ void WriteDeltaPixelArray8Fast( struct BitMap *dest, UBYTE *source, UBYTE *prev 
 
         /* process 32 pixels */
 
-        curr0 = *chunky++;  curr4 = *chunky++;
-        curr1 = *chunky++;  curr5 = *chunky++;
-        curr2 = *chunky++;  curr6 = *chunky++;
-        curr3 = *chunky++;  curr7 = *chunky++;
+        curr0 =  AROS_BE2LONG(*chunky++);  curr4 =  AROS_BE2LONG(*chunky++);
+        curr1 =  AROS_BE2LONG(*chunky++);  curr5 =  AROS_BE2LONG(*chunky++);
+        curr2 =  AROS_BE2LONG(*chunky++);  curr6 =  AROS_BE2LONG(*chunky++);
+        curr3 =  AROS_BE2LONG(*chunky++);  curr7 =  AROS_BE2LONG(*chunky++);
 
-        prev0 = *prevchunky++;  prev4 = *prevchunky++;
-        prev1 = *prevchunky++;  prev5 = *prevchunky++;
-        prev2 = *prevchunky++;  prev6 = *prevchunky++;
-        prev3 = *prevchunky++;  prev7 = *prevchunky++;
-
-        /* I use the '+' here to avoid that the compiler skips an expression.
-         * WARNING: The code assumes that the code is executed in the sequence as it occurs here
-         */
-        if ( (curr0 != prev0) || (curr4 != prev4) ||
-            (curr1 != prev1) || (curr5 != prev5) ||
-            (curr2 != prev2) || (curr6 != prev6) ||
-            (curr3 != prev3) || (curr7 != prev7))
-        {
-          merge( curr0, curr2, 0x0000ffff, 16 );
-          merge( curr1, curr3, 0x0000ffff, 16 );
-          merge( curr4, curr6, 0x0000ffff, 16 );
-          merge( curr5, curr7, 0x0000ffff, 16 );
-
-          merge( curr0, curr1, 0x00ff00ff,  8 );
-          merge( curr2, curr3, 0x00ff00ff,  8 );
-          merge( curr4, curr5, 0x00ff00ff,  8 );
-          merge( curr6, curr7, 0x00ff00ff,  8 );
-
-          merge( curr0, curr4, 0x0f0f0f0f,  4 );
-          merge( curr1, curr5, 0x0f0f0f0f,  4 );
-          merge( curr2, curr6, 0x0f0f0f0f,  4 );
-          merge( curr3, curr7, 0x0f0f0f0f,  4 );
-
-          merge( curr0, curr2, 0x33333333,  2 );
-          merge( curr1, curr3, 0x33333333,  2 );
-          merge( curr4, curr6, 0x33333333,  2 );
-          merge( curr5, curr7, 0x33333333,  2 );
-
-          merge( curr0, curr1, 0x55555555,  1 );
-          merge( curr2, curr3, 0x55555555,  1 );
-          merge( curr4, curr5, 0x55555555,  1 );
-          merge( curr6, curr7, 0x55555555,  1 );
-
-          *plane[ 7 ]++ = curr0;
-          *plane[ 6 ]++ = curr1;
-          *plane[ 5 ]++ = curr2;
-          *plane[ 4 ]++ = curr3;
-          *plane[ 3 ]++ = curr4;
-          *plane[ 2 ]++ = curr5;
-          *plane[ 1 ]++ = curr6;
-          *plane[ 0 ]++ = curr7;
-        }
-        else
-        {
-          plane[ 7 ]++;
-          plane[ 6 ]++;
-          plane[ 5 ]++;
-          plane[ 4 ]++;
-          plane[ 3 ]++;
-          plane[ 2 ]++;
-          plane[ 1 ]++;
-          plane[ 0 ]++;
-        }
-      }
-#else
-     for( i = 0UL ; i < numcycles ; i++ )
-      {
-        ULONG curr0, curr1, curr2, curr3, curr4, curr5, curr6, curr7;
-        ULONG prev0, prev1, prev2, prev3, prev4, prev5, prev6, prev7;
-        ULONG tmp;
-
-        /* process 32 pixels */
-
-        curr0 = *chunky++;  curr4 = *chunky++;
-        curr1 = *chunky++;  curr5 = *chunky++;
-        curr2 = *chunky++;  curr6 = *chunky++;
-        curr3 = *chunky++;  curr7 = *chunky++;
-
-        prev0 = *prevchunky++;  prev4 = *prevchunky++;
-        prev1 = *prevchunky++;  prev5 = *prevchunky++;
-        prev2 = *prevchunky++;  prev6 = *prevchunky++;
-        prev3 = *prevchunky++;  prev7 = *prevchunky++;
+        prev0 =  AROS_BE2LONG(*prevchunky++);  prev4 =  AROS_BE2LONG(*prevchunky++);
+        prev1 =  AROS_BE2LONG(*prevchunky++);  prev5 =  AROS_BE2LONG(*prevchunky++);
+        prev2 =  AROS_BE2LONG(*prevchunky++);  prev6 =  AROS_BE2LONG(*prevchunky++);
+        prev3 =  AROS_BE2LONG(*prevchunky++);  prev7 =  AROS_BE2LONG(*prevchunky++);
 
         /* I use the '+' here to avoid that the compiler skips an expression.
          * WARNING: The code assumes that the code is executed in the sequence as it occurs here
@@ -1923,14 +1849,14 @@ void WriteDeltaPixelArray8Fast( struct BitMap *dest, UBYTE *source, UBYTE *prev 
           merge( curr4, curr5, 0x55555555,  1 );
           merge( curr6, curr7, 0x55555555,  1 );
 
-          *plane[ 7 ]++ = curr0;
-          *plane[ 6 ]++ = curr1;
-          *plane[ 5 ]++ = curr2;
-          *plane[ 4 ]++ = curr3;
-          *plane[ 3 ]++ = curr4;
-          *plane[ 2 ]++ = curr5;
-          *plane[ 1 ]++ = curr6;
-          *plane[ 0 ]++ = curr7;
+          *plane[ 7 ]++ = AROS_LONG2BE(curr0);
+          *plane[ 6 ]++ = AROS_LONG2BE(curr1);
+          *plane[ 5 ]++ = AROS_LONG2BE(curr2);
+          *plane[ 4 ]++ = AROS_LONG2BE(curr3);
+          *plane[ 3 ]++ = AROS_LONG2BE(curr4);
+          *plane[ 2 ]++ = AROS_LONG2BE(curr5);
+          *plane[ 1 ]++ = AROS_LONG2BE(curr6);
+          *plane[ 0 ]++ = AROS_LONG2BE(curr7);
         }
         else
         {
@@ -1944,11 +1870,9 @@ void WriteDeltaPixelArray8Fast( struct BitMap *dest, UBYTE *source, UBYTE *prev 
           plane[ 0 ]++;
         }
       }
-#endif
     }
     else
     {
-#if !defined(__AROS__)
       /* Process bitmaps */
       for( i = 0UL ; i < numcycles ; i++ )
       {
@@ -1956,10 +1880,10 @@ void WriteDeltaPixelArray8Fast( struct BitMap *dest, UBYTE *source, UBYTE *prev 
                        tmp;
 
         /* process 32 pixels */
-        b0 = *chunky++;  b4 = *chunky++;
-        b1 = *chunky++;  b5 = *chunky++;
-        b2 = *chunky++;  b6 = *chunky++;
-        b3 = *chunky++;  b7 = *chunky++;
+        b0 = AROS_BE2LONG(*chunky++);  b4 = AROS_BE2LONG(*chunky++);
+        b1 = AROS_BE2LONG(*chunky++);  b5 = AROS_BE2LONG(*chunky++);
+        b2 = AROS_BE2LONG(*chunky++);  b6 = AROS_BE2LONG(*chunky++);
+        b3 = AROS_BE2LONG(*chunky++);  b7 = AROS_BE2LONG(*chunky++);
 
         merge( b0, b2, 0x0000ffff, 16 );
         merge( b1, b3, 0x0000ffff, 16 );
@@ -1986,29 +1910,15 @@ void WriteDeltaPixelArray8Fast( struct BitMap *dest, UBYTE *source, UBYTE *prev 
         merge( b4, b5, 0x55555555,  1 );
         merge( b6, b7, 0x55555555,  1 );
 
-        *plane[ 7 ]++ = b0;
-        *plane[ 6 ]++ = b1;
-        *plane[ 5 ]++ = b2;
-        *plane[ 4 ]++ = b3;
-        *plane[ 3 ]++ = b4;
-        *plane[ 2 ]++ = b5;
-        *plane[ 1 ]++ = b6;
-        *plane[ 0 ]++ = b7;
+        *plane[ 7 ]++ = AROS_LONG2BE(b0);
+        *plane[ 6 ]++ = AROS_LONG2BE(b1);
+        *plane[ 5 ]++ = AROS_LONG2BE(b2);
+        *plane[ 4 ]++ = AROS_LONG2BE(b3);
+        *plane[ 3 ]++ = AROS_LONG2BE(b4);
+        *plane[ 2 ]++ = AROS_LONG2BE(b5);
+        *plane[ 1 ]++ = AROS_LONG2BE(b6);
+        *plane[ 0 ]++ = AROS_LONG2BE(b7);
       }
-#else
-        ULONG x, width = GetBitMapAttr(dest, BMA_WIDTH);
-        struct RastPort rp = { 0 };
-        InitRastPort( (&rp) );
-        rp.BitMap = dest;
-        for ( i = 0; i < dest->Rows; i ++)
-        {
-            for (x = 0; x < width; x++)
-            {
-                SetAPen(&rp, source[(i * width) + x]);
-                WritePixel(&rp, x, i);
-            }
-        }
-#endif
     }
 }
 
