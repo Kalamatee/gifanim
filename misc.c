@@ -118,9 +118,9 @@ BOOL CMAP2Object( struct ClassBase *cb, Object *o, UBYTE *rgb, ULONG rgbsize )
            * This surrounds an OS bug which uses the low-order bytes of the 32-bit colors
            * instead of the high order ones
            */
-          acregs[ ((i * 3) + 0) ] = ((ULONG)(acm -> red))   * 0x01010101UL;
-          acregs[ ((i * 3) + 1) ] = ((ULONG)(acm -> green)) * 0x01010101UL;
-          acregs[ ((i * 3) + 2) ] = ((ULONG)(acm -> blue))  * 0x01010101UL;
+          acregs[ ((i * 3) + 0) ] = AROS_BE2LONG(((ULONG)(acm -> red))   * 0x01010101UL);
+          acregs[ ((i * 3) + 1) ] = AROS_BE2LONG(((ULONG)(acm -> green)) * 0x01010101UL);
+          acregs[ ((i * 3) + 2) ] = AROS_BE2LONG(((ULONG)(acm -> blue))  * 0x01010101UL);
         }
 
         return( TRUE );
@@ -153,7 +153,7 @@ struct ColorMap *CMAP2ColorMap( struct ClassBase *cb, ULONG anumcolors, UBYTE *r
         b = *rgb++;
 
         /* Replicate color information (see CMAP2Object for details) and store them into colormap */
-        SetRGB32CM( cm, i, (r * 0x01010101UL), (g * 0x01010101UL), (b * 0x01010101UL) );
+        SetRGB32CM( cm, i, AROS_BE2LONG(r * 0x01010101UL), AROS_BE2LONG(g * 0x01010101UL), AROS_BE2LONG(b * 0x01010101UL) );
       }
 
       /* BUG: the remaining entries should be filled with colors from the last colormap */
@@ -188,7 +188,7 @@ struct ColorMap *CopyColorMap( struct ClassBase *cb, struct ColorMap *src )
 
           for( i = 0UL ; i < (src -> Count) ; i++ )
           {
-            SetRGB32CM( dest, i, ctable[ ((i * 3) + 0) ], ctable[ ((i * 3) + 1) ], ctable[ ((i * 3) + 2) ] );
+            SetRGB32CM( dest, i, ctable[ ((i * 3) + 0) ], ctable[ ((i * 3) + 1) ], ctable[ ((i * 3) + 2) ]);
           }
         }
 
