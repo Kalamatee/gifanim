@@ -8,14 +8,14 @@ FILES 		:= GIFANIM
 
 DTFILES		:= $(foreach f, $(FILES), $(DTDIR)/$(f))
 
-#MM- workbench-datatypes-gifanim : workbench-datatype-gifanim
-#MM workbench-datatype-gifanim : workbench-devs-datatypes
+#MM- workbench-datatype-gifanim : workbench-datatype-gifanim-desc
+#MM workbench-datatype-gifanim-desc : workbench-devs-datatypes
 
 #MM
-workbench-datatype-gifanim : $(DTFILES)
+workbench-datatype-gifanim-desc : $(DTFILES)
 
 #MM
-workbench-datatype-gifanim-quick : workbench-datatype-gifanim
+workbench-datatype-gifanim-quick : workbench-datatype-gifanim-desc
 
 $(DTDIR)/% : $(SRCDIR)/$(CURDIR)/%.dtd
 	cd $(DTDIR) && $(CREATEDTDESC) $<
