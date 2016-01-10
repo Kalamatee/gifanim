@@ -139,7 +139,7 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
     if( gaid -> gaid_Pool = CreatePool( MEMF_PUBLIC, 8192UL, 8192UL ) )
     {
       BPTR                 fh;                             /* handle (file handle)      */
-      ULONG                sourcetype;                     /* type of stream (either DTST_FILE or DTST_RAM) */
+      IPTR                 sourcetype;                     /* type of stream (either DTST_FILE or DTST_RAM) */
       ULONG                modeid /*= (ULONG)INVALID_ID*/; /* anim view mode                  */
       ULONG                animwidth,                      /* anim width                      */
                            animheight,                     /* anim height                     */
