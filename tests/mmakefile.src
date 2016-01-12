@@ -1,0 +1,11 @@
+#   $Id$
+include $(TOP)/config/make.cfg
+
+TESTFILES := DancingPeaks.gif fish.gif
+TESTSDIR := $(AROS_TESTS)/datatypes
+
+#MM- workbench-datatype-gifanim : workbench-datatype-gifanim-testfiles
+
+%copy_files_q mmake=workbench-datatype-gifanim-testfiles files="$(TESTFILES)" dst=$(TESTSDIR)
+
+%common
