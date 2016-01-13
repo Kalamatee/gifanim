@@ -33,8 +33,13 @@ struct ColorMap *CMAP2ColorMap ( struct ClassBase *cb , ULONG anumcolors , UBYTE
 struct ColorMap *CopyColorMap ( struct ClassBase *cb , struct ColorMap *src );
 void WriteRGBPixelArray8 ( struct ClassBase *cb , struct BitMap *bm , ULONG animwidth , ULONG animheight , struct ColorRegister *cm , UBYTE *chunky );
 void CopyBitMap ( struct ClassBase *cb , struct BitMap *dest , struct BitMap *src , ULONG width , ULONG height );
+#if !defined(__AROS__)
 APTR AllocPooledVec ( struct ClassBase *cb , APTR pool , ULONG memsize );
 void FreePooledVec ( struct ClassBase *cb , APTR pool , APTR mem );
+#else
+#define AllocPooledVec(cb, pool, size) AllocVecPooled(pool, size)
+#define FreePooledVec(cb, pool, mem) FreeVecPooled(pool, mem)
+#endif
 
 /* encoder.c */
 ULONG SaveGIFAnim ( struct ClassBase *cb , struct IClass *cl , Object *o , struct dtWrite *dtw );

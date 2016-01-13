@@ -349,7 +349,7 @@ void CopyBitMap( struct ClassBase *cb, struct BitMap *dest, struct BitMap *src, 
 }
 
 /*****************************************************************************/
-
+#if !defined(__AROS__)
 /* allocate a piece of memory from an exec memory pool and track the allocation size */
 APTR AllocPooledVec( struct ClassBase *cb, APTR pool, ULONG memsize )
 {
@@ -370,7 +370,6 @@ APTR AllocPooledVec( struct ClassBase *cb, APTR pool, ULONG memsize )
     return( (APTR)memory );
 }
 
-
 void FreePooledVec( struct ClassBase *cb, APTR pool, APTR mem )
 {
     if( pool && mem )
@@ -384,7 +383,7 @@ void FreePooledVec( struct ClassBase *cb, APTR pool, APTR mem )
       FreePooled( pool, memory, (*memory) );
     }
 }
-
+#endif
 
 /*****************************************************************************/
 
