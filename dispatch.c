@@ -25,6 +25,7 @@ struct GIFAnimInstData;
 
 /* ansi includes */
 #include <limits.h>
+#include <stdio.h>
 
 /*****************************************************************************/
 

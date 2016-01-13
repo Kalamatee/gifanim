@@ -23,6 +23,7 @@ struct GIFEncoder;
 
 /*****************************************************************************/
 
+#if !defined(__AROS__)
 /* clib sprintf replacement */
 void mysprintf( struct ClassBase *cb, STRPTR buffer, STRPTR fmt, ... )
 {
@@ -32,6 +33,7 @@ void mysprintf( struct ClassBase *cb, STRPTR buffer, STRPTR fmt, ... )
 
     RawDoFmt( fmt, args, (void (*))"\x16\xc0\x4e\x75", buffer );
 }
+#endif
 
 /*****************************************************************************/
 

@@ -26,7 +26,11 @@ void verbose_printf ( struct ClassBase *cb , struct GIFAnimInstData *gaid , STRP
 void ReadENVPrefs ( struct ClassBase *cb , struct GIFAnimInstData *gaid , struct GIFEncoder *genc );
 
 /* misc.c */
-void mysprintf ( struct ClassBase *cb , STRPTR buffer , STRPTR fmt , ...);
+#if !defined(__AROS__)
+void mysprintf ( struct ClassBase * , STRPTR buffer , STRPTR fmt , ...);
+#else
+#define mysprintf(cb,buffer,fmt,...) sprintf (buffer,fmt, __VA_ARGS__)
+#endif
 void IBMPC2ISOLatin1 ( STRPTR ibmpc , STRPTR isolatin1 );
 BOOL CMAP2Object ( struct ClassBase *cb , Object *o , UBYTE *rgb , ULONG rgbsize );
 struct ColorMap *CMAP2ColorMap ( struct ClassBase *cb , ULONG anumcolors , UBYTE *rgb , ULONG rgbsize );

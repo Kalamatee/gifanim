@@ -22,6 +22,7 @@ struct GIFEncoder;
 
 /* ansi includes */
 #include <limits.h>
+#include <stdio.h>
 
 /*****************************************************************************/
 
