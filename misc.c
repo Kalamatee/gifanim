@@ -141,7 +141,7 @@ struct ColorMap *CMAP2ColorMap( struct ClassBase *cb, ULONG anumcolors, UBYTE *r
     D(bug("[gifanim.datatype]: %s()\n", __PRETTY_FUNCTION__));
 
     /* Get a colormap which hold all colors */
-    if( cm = GetColorMap( (long)MAX( a_nc, rgb_nc ) ) )
+    if ((cm = GetColorMap( (long)MAX( a_nc, rgb_nc ) )) != NULL)
     {
       ULONG i,
             r, g, b;
@@ -153,7 +153,7 @@ struct ColorMap *CMAP2ColorMap( struct ClassBase *cb, ULONG anumcolors, UBYTE *r
         b = *rgb++;
 
         /* Replicate color information (see CMAP2Object for details) and store them into colormap */
-        SetRGB32CM( cm, i, AROS_BE2LONG(r * 0x01010101UL), AROS_BE2LONG(g * 0x01010101UL), AROS_BE2LONG(b * 0x01010101UL) );
+        SetRGB32CM( cm, i, r * 0x01010101UL, g * 0x01010101UL, b * 0x01010101UL);
       }
 
       /* BUG: the remaining entries should be filled with colors from the last colormap */
@@ -178,9 +178,9 @@ struct ColorMap *CopyColorMap( struct ClassBase *cb, struct ColorMap *src )
     {
       ULONG *ctable;
 
-      if( ctable = (ULONG *)AllocVec( ((ULONG)(src -> Count) * sizeof( ULONG ) * 3UL), MEMF_PUBLIC ) )
+      if ((ctable = (ULONG *)AllocVec( ((ULONG)(src -> Count) * sizeof( ULONG ) * 3UL), MEMF_PUBLIC )) != NULL)
       {
-        if( dest = GetColorMap( (long)(src -> Count) ) )
+        if ((dest = GetColorMap( (long)(src -> Count) )) != NULL)
         {
           ULONG i;
 
@@ -353,13 +353,13 @@ void CopyBitMap( struct ClassBase *cb, struct BitMap *dest, struct BitMap *src, 
 /* allocate a piece of memory from an exec memory pool and track the allocation size */
 APTR AllocPooledVec( struct ClassBase *cb, APTR pool, ULONG memsize )
 {
-    ULONG *memory = NULL;
+    IPTR *memory = NULL;
 
     if( pool && memsize )
     {
-      memsize += (ULONG)sizeof( ULONG );
+      memsize += (ULONG)sizeof( IPTR );
 
-      if( memory = (ULONG *)AllocPooled( pool, memsize ) )
+      if ((memory = (IPTR *)AllocPooled( pool, memsize ) ) != NULL)
       {
         (*memory) = memsize;
 
@@ -375,9 +375,9 @@ void FreePooledVec( struct ClassBase *cb, APTR pool, APTR mem )
 {
     if( pool && mem )
     {
-      ULONG *memory;
+      IPTR *memory;
 
-      memory = (ULONG *)mem;
+      memory = (IPTR *)mem;
 
       memory--;
 
