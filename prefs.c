@@ -160,7 +160,7 @@ STRPTR GetPrefsVar( struct ClassBase *cb, STRPTR name )
           STRPTR buff;
     const ULONG  buffsize = 16UL;
 
-    if( buff = (STRPTR)AllocVec( (buffsize + 2UL), (MEMF_PUBLIC | MEMF_CLEAR) ) )
+    if ((buff = (STRPTR)AllocVec( (buffsize + 2UL), (MEMF_PUBLIC | MEMF_CLEAR) ) ) != NULL)
     {
       if( GetVar( name, buff, buffsize, GVF_BINARY_VAR ) != (-1L) )
       {
@@ -172,7 +172,7 @@ STRPTR GetPrefsVar( struct ClassBase *cb, STRPTR name )
         {
           FreeVec( buff );
 
-          if( buff = (STRPTR)AllocVec( (varsize + 2UL), (MEMF_PUBLIC | MEMF_CLEAR) ) )
+          if ((buff = (STRPTR)AllocVec( (varsize + 2UL), (MEMF_PUBLIC | MEMF_CLEAR) ) ) != NULL)
           {
             if( GetVar( name, buff, varsize, GVF_BINARY_VAR ) != (-1L) )
             {
@@ -216,42 +216,40 @@ void ReadENVPrefs( struct ClassBase *cb, struct GIFAnimInstData *gaid, struct GI
 {
     struct RDArgs envvarrda =
     {
-      NULL,
-      256L,
-      0L,
-      0L,
-      NULL,
-      0L,
-      NULL,
-      RDAF_NOPROMPT
+        { NULL, 256L, 0L},
+        0L,
+        NULL,
+        0L,
+        NULL,
+        RDAF_NOPROMPT
     };
 
     struct
     {
       STRPTR  matchproject;
-      long   *verbose;
-      long   *noverbose;
-      long   *strictsyntax;
-      long   *nostrictsyntax;
-      long   *modeid;
-      long   *use24bitchunky;
-      long   *nouse24bitchunky;
-      long   *fps;
+      IPTR    verbose;
+      IPTR    noverbose;
+      IPTR    strictsyntax;
+      IPTR    nostrictsyntax;
+      IPTR    *modeid;
+      IPTR    use24bitchunky;
+      IPTR    nouse24bitchunky;
+      IPTR    *fps;
       STRPTR  sample;
-      long   *samplesperframe;
-      long   *volume;
-      long   *loadall;
-      long   *noloadall;
-      long   *enc_interlace;
-      long   *enc_no_interlace;
-      long   *enc_backgroundpen;
-      long   *enc_transparentpen;
+      IPTR    *samplesperframe;
+      IPTR    *volume;
+      IPTR    loadall;
+      IPTR    noloadall;
+      IPTR    enc_interlace;
+      IPTR    enc_no_interlace;
+      IPTR    *enc_backgroundpen;
+      IPTR    *enc_transparentpen;
     } gifanimargs;
 
     TEXT   varbuff[ 258 ];
     STRPTR var;
 
-    if( var = GetPrefsVar( cb, "Classes/DataTypes/gifanim.prefs" ) )
+    if ((var = GetPrefsVar( cb, "Classes/DataTypes/gifanim.prefs" ) ) != NULL)
     {
       STRPTR prefsline      = var,
              nextprefsline;
@@ -260,7 +258,7 @@ void ReadENVPrefs( struct ClassBase *cb, struct GIFAnimInstData *gaid, struct GI
       /* Be sure that "var" contains at least one break-char */
       strcat( var, "\n" );
 
-      while( nextprefsline = strpbrk( prefsline, "\n" ) )
+      while ((nextprefsline = strpbrk( prefsline, "\n" ) ) != NULL)
       {
         stccpy( varbuff, prefsline, (int)MIN( (sizeof( varbuff ) - 2UL), (((ULONG)(nextprefsline - prefsline)) + 1UL) ) );
 
@@ -293,7 +291,7 @@ void ReadENVPrefs( struct ClassBase *cb, struct GIFAnimInstData *gaid, struct GI
                         "ENC_INTERLACE/S,"
                         "ENC_NO_INTERLACE/S,"
                         "ENC_BACKGROUNDPEN=ENC_BG/K/N,"
-                        "ENC_TRANSPARENTPEN=ENC_TRANSPARENT/K/N", (LONG *)(&gifanimargs), (&envvarrda) ) )
+                        "ENC_TRANSPARENTPEN=ENC_TRANSPARENT/K/N", (IPTR *)(&gifanimargs), (&envvarrda) ) )
           {
             BOOL noignore = TRUE;
 
@@ -336,12 +334,12 @@ void ReadENVPrefs( struct ClassBase *cb, struct GIFAnimInstData *gaid, struct GI
 
                 if( gifanimargs . noverbose )
                 {
-                  if( (gaid -> gaid_VerboseOutput) && ((gaid -> gaid_VerboseOutput) != -1L) )
+                  if( (gaid -> gaid_VerboseOutput) && ((gaid -> gaid_VerboseOutput) != (BPTR)-1L) )
                   {
                     Close( (gaid -> gaid_VerboseOutput) );
                   }
 
-                  gaid -> gaid_VerboseOutput = -1L;
+                  gaid -> gaid_VerboseOutput = (BPTR)-1L;
                 }
 
                 if( gifanimargs . strictsyntax )
@@ -412,7 +410,7 @@ void ReadENVPrefs( struct ClassBase *cb, struct GIFAnimInstData *gaid, struct GI
 
                   verbose_printf( cb, gaid, "loading sample \"%s\"...\n", (gifanimargs . sample) );
 
-                  if( so = NewDTObject( (gifanimargs . sample), DTA_GroupID, GID_SOUND, TAG_DONE ) )
+                  if ((so = NewDTObject( (gifanimargs . sample), DTA_GroupID, GID_SOUND, TAG_DONE ) ) != NULL)
                   {
                     BYTE  *sample;
                     ULONG  length;
@@ -424,7 +422,7 @@ void ReadENVPrefs( struct ClassBase *cb, struct GIFAnimInstData *gaid, struct GI
                                         SDTA_Period,       (&period),
                                         TAG_DONE ) == 3UL )
                     {
-                      if( gaid -> gaid_Sample = (STRPTR)AllocPooled( (gaid -> gaid_Pool), (length + 1UL) ) )
+                      if ((gaid -> gaid_Sample = (STRPTR)AllocPooled( (gaid -> gaid_Pool), (length + 1UL) ) ) != NULL)
                       {
                         /* Copy sample and context */
                         CopyMem( (APTR)sample, (APTR)(gaid -> gaid_Sample), length );

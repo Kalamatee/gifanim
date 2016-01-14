@@ -16,6 +16,7 @@
 
 struct MyStackSwapStruct;
 struct GIFAnimInstData;
+struct GIFEncoder;
 
 /* main includes */
 #include "classbase.h"
@@ -137,7 +138,7 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
     NewList( (struct List *)(&(gaid -> gaid_FrameList)) );
 
     /* Create a memory pool for frame nodes */
-    if( gaid -> gaid_Pool = CreatePool( MEMF_PUBLIC, 8192UL, 8192UL ) )
+    if ((gaid -> gaid_Pool = CreatePool( MEMF_PUBLIC, 8192UL, 8192UL ) ) != NULL)
     {
       BPTR                 fh;                             /* handle (file handle)      */
       IPTR                 sourcetype;                     /* type of stream (either DTST_FILE or DTST_RAM) */
@@ -175,10 +176,10 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
               {
                 BPTR lock;
 
-                if( lock = DupLockFromFH( fh ) )
+                if ((lock = DupLockFromFH( fh ) ) != BNULL)
                 {
                   /* Set up a filehandle for disk-based loading (random loading) */
-                  if( gaid -> gaid_FH = (BPTR)OpenFromLock( lock ) )
+                  if ((gaid -> gaid_FH = (BPTR)OpenFromLock( lock ) ) != BNULL)
                   {
                     success = TRUE;
                   }
@@ -191,10 +192,10 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
               }
 
               /* OpenFromLock failed ? - Then open by name :-( */
-              if( (gaid -> gaid_FH) == NULL )
+              if( (gaid -> gaid_FH) == BNULL )
               {
                 /* Set up a filehandle for disk-based loading (random loading) */
-                if( gaid -> gaid_FH = (BPTR)Open( (gaid -> gaid_ProjectName), MODE_OLDFILE ) )
+                if ((gaid -> gaid_FH = (BPTR)Open( (gaid -> gaid_ProjectName), MODE_OLDFILE ) ) != BNULL)
                 {
                   success = TRUE;
                 }
@@ -671,7 +672,7 @@ scandone:
 
                         worknode = (struct FrameNode *)(gaid -> gaid_FrameList . mlh_Head);
 
-                        while( nextnode = (struct FrameNode *)(worknode -> fn_Node . mln_Succ) )
+                        while ((nextnode = (struct FrameNode *)(worknode -> fn_Node . mln_Succ) ) != NULL)
                         {
                           if( worknode -> fn_CMap )
                           {
@@ -919,7 +920,7 @@ struct FrameNode *AllocFrameNode( struct ClassBase *cb, APTR pool )
 
     D(bug("[gifanim.datatype]: %s()\n", __PRETTY_FUNCTION__));
 
-    if( fn = (struct FrameNode *)AllocPooled( pool, (ULONG)sizeof( struct FrameNode ) ) )
+    if ((fn = (struct FrameNode *)AllocPooled( pool, (ULONG)sizeof( struct FrameNode ) ) ) != NULL)
     {
       memset( fn, 0, sizeof( struct FrameNode ) );
     }
@@ -941,7 +942,7 @@ struct FrameNode *FindFrameNode( struct MinList *fnl, ULONG timestamp )
 
       prevnode = worknode = (struct FrameNode *)(fnl -> mlh_Head);
 
-      while( nextnode = (struct FrameNode *)(worknode -> fn_Node . mln_Succ) )
+      while ((nextnode = (struct FrameNode *)(worknode -> fn_Node . mln_Succ) ) != NULL)
       {
         if( (worknode -> fn_TimeStamp) > timestamp )
         {
@@ -976,9 +977,9 @@ void FreeFrameNodeResources( struct ClassBase *cb, struct GIFAnimInstData *gaid 
 
     worknode = (struct FrameNode *)(gaid -> gaid_FrameList . mlh_Head);
 
-    while( nextnode = (struct FrameNode *)(worknode -> fn_Node . mln_Succ) )
+    while ((nextnode = (struct FrameNode *)(worknode -> fn_Node . mln_Succ) ) != NULL)
 #else
-    while( worknode = (struct FrameNode *)RemTail( (struct List *)(&(gaid -> gaid_FrameList)) ) )
+    while ((worknode = (struct FrameNode *)RemTail( (struct List *)(&(gaid -> gaid_FrameList)) ) ) != NULL)
 #endif /* FREE_LIST_IN_REVERSE_ORDER */
     {
       if( worknode -> fn_CMap )
@@ -1048,7 +1049,7 @@ struct BitMap *AllocBitMapPooled( struct ClassBase *cb, ULONG width, ULONG heigh
     planesize = (ULONG)RASSIZE( width, height ) + 16UL;
     size      = ((ULONG)sizeof( struct BitMap )) + (planesize * depth) + width;
 
-    if( bm = (struct BitMap *)AllocPooledVec( cb, pool, size ) )
+    if ((bm = (struct BitMap *)AllocPooledVec( cb, pool, size ) ) != NULL)
     {
       UWORD    pl;
       PLANEPTR plane;
@@ -1090,7 +1091,7 @@ void OpenLogfile( struct ClassBase *cb, struct GIFAnimInstData *gaid )
     {
       STRPTR confile;
 
-      if( confile = (STRPTR)AllocVec( (((gaid -> gaid_ProjectName)?(strlen( (gaid -> gaid_ProjectName) )):(0UL)) + 100UL), MEMF_PUBLIC ) )
+      if ((confile = (STRPTR)AllocVec( (((gaid -> gaid_ProjectName)?(strlen( (gaid -> gaid_ProjectName) )):(0UL)) + 100UL), MEMF_PUBLIC ) ) != NULL)
       {
         mysprintf( cb, confile, "CON:////GIF Anim DataType %s/auto/wait/close/inactive",
                    ((gaid -> gaid_ProjectName)?(FilePart( (gaid -> gaid_ProjectName) )):(NULL)) );
@@ -1105,7 +1106,7 @@ void OpenLogfile( struct ClassBase *cb, struct GIFAnimInstData *gaid )
 
 void error_printf( struct ClassBase *cb, struct GIFAnimInstData *gaid, STRPTR format, ... )
 {
-    if( (gaid -> gaid_VerboseOutput) != -1L )
+    if( (gaid -> gaid_VerboseOutput) != (BPTR)-1L )
     {
       OpenLogfile( cb, gaid );
 
@@ -1119,7 +1120,7 @@ void error_printf( struct ClassBase *cb, struct GIFAnimInstData *gaid, STRPTR fo
 
 void verbose_printf( struct ClassBase *cb, struct GIFAnimInstData *gaid, STRPTR format, ... )
 {
-    if( (gaid -> gaid_VerboseOutput) && ((gaid -> gaid_VerboseOutput) != -1L) )
+    if( (gaid -> gaid_VerboseOutput) && ((gaid -> gaid_VerboseOutput) != (BPTR)-1L) )
     {
       VFPrintf( (gaid -> gaid_VerboseOutput), format, (APTR)((&format) + 1) );
     }
@@ -1157,7 +1158,7 @@ void AttachSample( struct ClassBase *cb, struct GIFAnimInstData *gaid )
 
       worknode = (struct FrameNode *)(gaid -> gaid_FrameList . mlh_Head);
 
-      while( nextnode = (struct FrameNode *)(worknode -> fn_Node . mln_Succ) )
+      while ((nextnode = (struct FrameNode *)(worknode -> fn_Node . mln_Succ) ) != NULL)
       {
         worknode -> fn_Sample       = sample;
         worknode -> fn_SampleLength = samplesperframe * ((worknode -> fn_Duration) + 1UL);
@@ -1200,7 +1201,7 @@ int DoExtension( struct ClassBase *cb, Object *o, struct GIFAnimInstData *gaid, 
 
     D(bug("[gifanim.datatype]: %s()\n", __PRETTY_FUNCTION__));
 
-    switch( label )
+    switch( (int)label )
     {
       case 0x01:              /* Plain Text Extension */
       {
@@ -1277,7 +1278,7 @@ int DoExtension( struct ClassBase *cb, Object *o, struct GIFAnimInstData *gaid, 
           }
 
           /* Verbose output ? */
-          if( (gaid -> gaid_VerboseOutput) && ((gaid -> gaid_VerboseOutput) != -1L) )
+          if( (gaid -> gaid_VerboseOutput) && ((gaid -> gaid_VerboseOutput) != (BPTR)-1L) )
           {
             STRPTR user_input = ((gifdec -> Gif89 . inputFlag)?(" user input requested"):(""));
             STRPTR disposal;
@@ -1328,7 +1329,7 @@ int DoExtension( struct ClassBase *cb, Object *o, struct GIFAnimInstData *gaid, 
             }
 
             /* Allocate a temp. buffer */
-            if( annotation = (STRPTR)AllocMem( size, MEMF_ANY ) )
+            if ((annotation = (STRPTR)AllocMem( size, MEMF_ANY ) ) != NULL)
             {
               if( oldannotation )
               {
@@ -1375,7 +1376,7 @@ int DoExtension( struct ClassBase *cb, Object *o, struct GIFAnimInstData *gaid, 
           break;
     }
 
-    verbose_printf( cb, gaid, "got a '%s' extension\n", ((str)?(str):"") );
+    verbose_printf( cb, gaid, "got a '%s' extension\n", ((str)?(str):(STRPTR)"") );
 
     /* skip extension data */
     while( (count = GetDataBlock( cb, gaid, buf )), ((count != 0) && (count != -1)) )
@@ -1634,7 +1635,7 @@ int ReadImage( struct ClassBase *cb, struct GIFAnimInstData *gaid, UBYTE *image,
     /* If this is an "uninteresting picture" ignore it. */
     if( ignore )
     {
-      D( kprintf( cb, gaid, "skipping gif image...\n" ) );
+      D(bug("[gifanim.datatype]: %s: skipping gif image...\n", __PRETTY_FUNCTION__ ) );
 
       /* Loop until end of raster data */
       for( ;; )
@@ -1647,7 +1648,7 @@ int ReadImage( struct ClassBase *cb, struct GIFAnimInstData *gaid, UBYTE *image,
 
         if( c == 0 )
         {
-          D( kprintf( cb, gaid, "gif image done\n" ) );
+          D(bug("[gifanim.datatype]: %s: gif image done\n", __PRETTY_FUNCTION__ ) );
           break;
         }
 
@@ -1669,7 +1670,7 @@ int ReadImage( struct ClassBase *cb, struct GIFAnimInstData *gaid, UBYTE *image,
       if( LWZReadByte( cb, gaid, TRUE, c ) < 0 )
         error_printf( cb, gaid, "error reading image\n" );
 
-      D( kprintf( cb, gaid, "reading %lx %ld.%ld / %ld by %ld%s GIF image\n", image, left, top, len, height, interlace ? " interlaced" : "" ) );
+      D(bug("[gifanim.datatype]: %s: reading %lx %ld.%ld / %ld by %ld%s GIF image\n", __PRETTY_FUNCTION__, image, left, top, len, height, interlace ? " interlaced" : "" ) );
 
       while( (v = LWZReadByte( cb, gaid, FALSE, c )) >= 0 )
       {
@@ -1747,7 +1748,7 @@ struct FrameNode *GetPrevFrameNode( struct FrameNode *currfn, ULONG interleave )
     /* Get previous frame */
     worknode = currfn;
 
-    while( prevnode = (struct FrameNode *)(worknode -> fn_Node . mln_Pred) )
+    while ((prevnode = (struct FrameNode *)(worknode -> fn_Node . mln_Pred) ) != NULL)
     {
       if( (interleave-- == 0U) || ((prevnode -> fn_Node . mln_Pred) == NULL) )
       {

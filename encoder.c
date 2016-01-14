@@ -119,7 +119,7 @@ ULONG SaveGIFAnim( struct ClassBase *cb, struct IClass *cl, Object *o, struct dt
           {
             struct GIFEncoder *genc;
 
-            if( genc = CreateGIFEncoder( cb, o, gaid, keyframe, animwidth, animheight, animdepth, numcolors, tpf, (dtw -> dtw_FileHandle) ) )
+            if ((genc = CreateGIFEncoder( cb, o, gaid, keyframe, animwidth, animheight, animdepth, numcolors, tpf, (dtw -> dtw_FileHandle) ) ) != NULL)
             {
               struct TagItem *tstate,
                              *ti;
@@ -128,7 +128,7 @@ ULONG SaveGIFAnim( struct ClassBase *cb, struct IClass *cl, Object *o, struct dt
 
               tstate = dtw -> dtw_AttrList;
 
-              while( ti = NextTagItem( (&tstate) ) )
+              while ((ti = NextTagItem( (&tstate) ) ) != NULL)
               {
                 switch( ti -> ti_Tag )
                 {
@@ -212,7 +212,7 @@ struct GIFEncoder *CreateGIFEncoder( struct ClassBase *cb, Object *o, struct GIF
       size2 = size1 + chunkysize                  + 8UL;    /* Chunky map 1 */
       msize = size2 + chunkysize                  + 8UL;    /* Chunky map 2 */
 
-      if( genc = (struct GIFEncoder *)AllocVec( msize, (MEMF_PUBLIC | MEMF_CLEAR) ) )
+      if ((genc = (struct GIFEncoder *)AllocVec( msize, (MEMF_PUBLIC | MEMF_CLEAR) ) ) != NULL)
       {
         /* get the chunkymap ptrs... */
         genc -> srcchunkymap[ 0 ] = MEMORY_NAL_FOLLOWING( genc, size1 );
@@ -499,7 +499,7 @@ BOOL GIFEncode( struct GIFEncoder *genc, struct GIFAnimInstData *gaid,
       struct TagItem *tstate = commentstags,
                      *ti;
 
-      while( ti = NextTagItem( (&tstate) ) )
+      while ((ti = NextTagItem( (&tstate) ) ) != NULL)
       {
         STRPTR string,
                label = (STRPTR)(ti -> ti_Data);

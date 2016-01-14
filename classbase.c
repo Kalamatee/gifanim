@@ -14,6 +14,9 @@
 #define DEBUG 1
 #include <aros/debug.h>
 
+struct GIFAnimInstData;
+struct GIFEncoder;
+
 /* main includes */
 #include "classbase.h"
 
