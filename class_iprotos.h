@@ -5,10 +5,8 @@ DISPATCHERFLAGS struct IClass *ObtainGIFAnimEngine ( REGA6 struct ClassBase *cb 
 DISPATCHERFLAGS struct Library *LibInit ( REGD0 struct ClassBase *cb , REGA0 BPTR seglist , REGA6 struct ExecBase *sysbase );
 DISPATCHERFLAGS LONG LibOpen ( REGA6 struct ClassBase *cb );
 DISPATCHERFLAGS LONG LibClose ( REGA6 struct ClassBase *cb );
-#endif
 DISPATCHERFLAGS LONG LibExpunge ( REGA6 struct ClassBase *cb );
 
-#if !defined(__AROS__)
 /* stackswap.c */
 DISPATCHERFLAGS ULONG StackSwapDispatch ( REGA0 struct IClass *cl , REGA2 Object *o , REGA1 Msg msg );
 DISPATCHERFLAGS ULONG SwapMe ( REGA0 struct MyStackSwapStruct *mystk );
@@ -26,11 +24,6 @@ void verbose_printf ( struct ClassBase *cb , struct GIFAnimInstData *gaid , STRP
 void ReadENVPrefs ( struct ClassBase *cb , struct GIFAnimInstData *gaid , struct GIFEncoder *genc );
 
 /* misc.c */
-#if !defined(__AROS__)
-void mysprintf ( struct ClassBase * , STRPTR buffer , STRPTR fmt , ...);
-#else
-#define mysprintf(cb,buffer,fmt,...) sprintf (buffer,fmt, __VA_ARGS__)
-#endif
 void IBMPC2ISOLatin1 ( STRPTR ibmpc , STRPTR isolatin1 );
 BOOL CMAP2Object ( struct ClassBase *cb , Object *o , UBYTE *rgb , ULONG rgbsize );
 struct ColorMap *CMAP2ColorMap ( struct ClassBase *cb , ULONG anumcolors , UBYTE *rgb , ULONG rgbsize );
@@ -38,9 +31,11 @@ struct ColorMap *CopyColorMap ( struct ClassBase *cb , struct ColorMap *src );
 void WriteRGBPixelArray8 ( struct ClassBase *cb , struct BitMap *bm , ULONG animwidth , ULONG animheight , struct ColorRegister *cm , UBYTE *chunky );
 void CopyBitMap ( struct ClassBase *cb , struct BitMap *dest , struct BitMap *src , ULONG width , ULONG height );
 #if !defined(__AROS__)
+void mysprintf ( struct ClassBase * , STRPTR buffer , STRPTR fmt , ...);
 APTR AllocPooledVec ( struct ClassBase *cb , APTR pool , ULONG memsize );
 void FreePooledVec ( struct ClassBase *cb , APTR pool , APTR mem );
 #else
+#define mysprintf(cb,buffer,fmt,...) sprintf(buffer,fmt, __VA_ARGS__)
 #define AllocPooledVec(cb, pool, size) AllocVecPooled(pool, size)
 #define FreePooledVec(cb, pool, mem) FreeVecPooled(pool, mem)
 #endif
