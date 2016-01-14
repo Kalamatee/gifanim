@@ -202,7 +202,6 @@ IPTR DT_FrameBox(struct IClass *cl, Object *o, struct dtFrameBox *msg)
 
 IPTR DT_SetMethod(struct IClass *cl, Object *o, struct opSet *msg)
 {
-    struct ClassBase        *cb = (struct ClassBase *)(cl -> cl_UserData);
     IPTR retval;
 
     D(bug("[gifanim.datatype]: %s()\n", __PRETTY_FUNCTION__));
