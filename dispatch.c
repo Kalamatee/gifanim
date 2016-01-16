@@ -595,7 +595,7 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
                                 }
                                 else
                                 {
-                                  duration = 0UL;
+                                  duration = 0;
                                 }
 
                                 fn -> fn_TimeStamp = timestamp;
@@ -1104,6 +1104,7 @@ void OpenLogfile( struct ClassBase *cb, struct GIFAnimInstData *gaid )
 }
 
 
+#if !defined(__AROS__)
 void error_printf( struct ClassBase *cb, struct GIFAnimInstData *gaid, STRPTR format, ... )
 {
     if( (gaid -> gaid_VerboseOutput) != (BPTR)-1L )
@@ -1125,7 +1126,7 @@ void verbose_printf( struct ClassBase *cb, struct GIFAnimInstData *gaid, STRPTR 
       VFPrintf( (gaid -> gaid_VerboseOutput), format, (APTR)((&format) + 1) );
     }
 }
-
+#endif
 
 static
 void AttachSample( struct ClassBase *cb, struct GIFAnimInstData *gaid )
