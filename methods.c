@@ -410,7 +410,7 @@ IPTR DT_LoadFrame(struct IClass *cl, Object *o, struct adtFrame *alf)
 
                 if( ((worknode -> fn_ChunkyMap) == NULL) && ((worknode -> fn_TimeStamp) == 0UL) )
                 {
-                  error_printf( cb, gaid, "first frame without bitmap ... !\n" );
+                  error_printf( cb, gaid, "frame %d frame without bitmap ... !\n", 0);
                 }
 
                 do

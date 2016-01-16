@@ -11,6 +11,11 @@
 **
 */
 
+#ifndef DEBUG
+#   define DEBUG 0
+#endif
+#include <aros/debug.h>
+
 struct MyStackSwapStruct;
 struct GIFAnimInstData;
 struct GIFEncoder;

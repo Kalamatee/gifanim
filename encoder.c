@@ -11,6 +11,11 @@
 **
 */
 
+#ifndef DEBUG
+#   define DEBUG 0
+#endif
+#include <aros/debug.h>
+
 struct MyStackSwapStruct;
 struct GIFAnimInstData;
 struct GIFEncoder;
@@ -154,12 +159,12 @@ ULONG SaveGIFAnim( struct ClassBase *cb, struct IClass *cl, Object *o, struct dt
             {
               /* Can't alloc gif encoder context data */
               error = ERROR_NO_FREE_STORE;
-              error_printf( cb, gaid, "no memory for encoder context data\n" );
+              error_printf( cb, gaid, "no memory for encoder context data (%d)\n", error);
             }
           }
           else
           {
-            error_printf( cb, gaid, "HAM/EHB not supported by the GIF format\n" );
+            error_printf( cb, gaid, "HAM/EHB not supported by the GIF format (%x)\n", -1);
             error = (modeid & EXTRA_HALFBRITE)?(ERROR_NOT_IMPLEMENTED):(DTERROR_INVALID_DATA);
           }
         }
@@ -172,7 +177,7 @@ ULONG SaveGIFAnim( struct ClassBase *cb, struct IClass *cl, Object *o, struct dt
       else
       {
         /* can't get required attributes from object */
-        error_printf( cb, gaid, "not enougth attributes\n" );
+        error_printf( cb, gaid, "failed to obatin %d attributes\n", 10);
         error = ERROR_OBJECT_WRONG_TYPE;
       }
 
@@ -253,7 +258,7 @@ struct GIFEncoder *CreateGIFEncoder( struct ClassBase *cb, Object *o, struct GIF
         }
         else
         {
-          error_printf( cb, gaid, "no memory for temporary bitmap(s)\n" );
+          error_printf( cb, gaid, "no memory for temporary %d bit bitmap(s)\n", animdepth);
         }
 
         FreeBitMap( (genc -> rpa8tmprp . BitMap) );
@@ -261,14 +266,14 @@ struct GIFEncoder *CreateGIFEncoder( struct ClassBase *cb, Object *o, struct GIF
       }
       else
       {
-        error_printf( cb, gaid, "no memory for encoder context data\n" );
+        error_printf( cb, gaid, "no memory for %d byte encoder context data\n", msize);
       }
 
       FreeVec( genc );
     }
     else
     {
-      error_printf( cb, gaid, "invalid arguments\n" );
+      error_printf( cb, gaid, "invalid arguments for object @ 0x%p\n", o);
     }
 
 
@@ -590,7 +595,7 @@ BOOL GIFEncode( struct GIFEncoder *genc, struct GIFAnimInstData *gaid,
         else
         {
           /* Should not occur */
-          error_printf( cb, gaid, "WARNING: no bitmap\n" );
+          error_printf( cb, gaid, "WARNING: no bitmap @ timestamp %d\n", timestamp);
           SetIoErr( ERROR_OBJECT_WRONG_TYPE ); /* not very meaningfull */
           return( FALSE );
         }

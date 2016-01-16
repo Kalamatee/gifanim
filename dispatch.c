@@ -296,7 +296,7 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
                       {
                           D(bug("[gifanim.datatype]: %s:   failed!\n", __PRETTY_FUNCTION__));
                         error = IoErr();
-                        error_printf( cb, gaid, "error reading global colormap\n" );
+                        error_printf( cb, gaid, "error %d reading global colormap\n", error);
                       }
                     }
                     else
@@ -312,7 +312,7 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
                       if( !ReadOK( cb, gifdec, (&c), 1 ) )
                       {
                         error = IoErr();
-                        error_printf( cb, gaid, "EOF / read error on image data\n" );
+                        error_printf( cb, gaid, "EOF / read error on image data (%x)\n", error);
                         break;
                       }
 
@@ -334,14 +334,14 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
                               if( DoExtension( cb, o, gaid, c ) == -1 )
                               {
                                 error = IoErr();
-                                error_printf( cb, gaid, "error in extension\n" );
+                                error_printf( cb, gaid, "error %x in extension\n", error);
                                 goto scandone;
                               }
                             }
                             else
                             {
                               error = IoErr();
-                              error_printf( cb, gaid, "OF / read error on extension function code\n" );
+                              error_printf( cb, gaid, "OF / read error on extension function code (%x)\n", error);
                               goto scandone;
                             }
                         }
@@ -388,7 +388,7 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
                                 if( !ReadOK( cb, gifdec, buf, 9 ) )
                                 {
                                   error = IoErr();
-                                  error_printf( cb, gaid, "couldn't read left/top/width/height\n" );
+                                  error_printf( cb, gaid, "couldn't read left/top/width/height (%x)\n", error);
                                   goto scandone;
                                 }
 
@@ -520,7 +520,7 @@ BOOL ScanFrames( struct ClassBase *cb, Object *o )
                                   if( ReadColorMap( cb, gaid, bitPixel, localColorMap ) )
                                   {
                                     error = IoErr();
-                                    error_printf( cb, gaid, "error reading local colormap\n" );
+                                    error_printf( cb, gaid, "error %x reading local colormap\n", error);
                                     goto scandone;
                                   }
                                 }
@@ -768,7 +768,7 @@ scandone:
                                 {
                                   modeid = 0UL;
 
-                                  error_printf( cb, gaid, "'CyberGFX bug' workaround failed, too ! Using lores.\n" );
+                                  error_printf( cb, gaid, "'CyberGFX bug' workaround failed, too ! Using modeid=%x.\n", modeid);
                                 }
 #endif
 
@@ -853,27 +853,27 @@ scandone:
                   else
                   {
                     error = IoErr();
-                    error_printf( cb, gaid, "failed to read gif screen descriptor\n" );
+                    error_printf( cb, gaid, "failed to read gif screen descriptor (%x)\n", error);
                   }
                 }
                 else
                 {
                   /* unsupported GIF version number */
                   error = DTERROR_UNKNOWN_COMPRESSION;
-                  error_printf( cb, gaid, "bad version number, not '87a' or '89a'\n" );
+                  error_printf( cb, gaid, "error %x bad version number, not '87a' or '89a'\n", error);
                 }
               }
               else
               {
                 /* no GIF signature */
                 error = ERROR_OBJECT_WRONG_TYPE;
-                error_printf( cb, gaid, "not a GIF file\n" );
+                error_printf( cb, gaid, "error %x not a GIF file\n", error);
               }
             }
             else
             {
               error = IoErr();
-              error_printf( cb, gaid, "error reading magic number\n" );
+              error_printf( cb, gaid, "error %x reading magic number\n", error);
             }
 
             /* Prepare decoder for dynamic frame access */
@@ -1225,8 +1225,8 @@ int DoExtension( struct ClassBase *cb, Object *o, struct GIFAnimInstData *gaid, 
                 foreground,
                 background;
 
-          error_printf( cb, gaid, "'Plain text extension' not supported yet. Please send this animation to the author that"
-                                  "this can be implemented\n" );
+          error_printf( cb, gaid, "'Plain text extension' (%d) not supported yet. Please send this animation to the author that"
+                                  "this can be implemented\n", (int)label );
 
           if( GetDataBlock( cb, gaid, buf ) == -1 )
           {
@@ -1408,7 +1408,7 @@ int GetDataBlock( struct ClassBase *cb, struct GIFAnimInstData *gaid, UBYTE *buf
 
     if( !ReadOK( cb, gifdec, &count, 1 ) )
     {
-      error_printf( cb, gaid, "error in getting DataBlock size\n" );
+      error_printf( cb, gaid, "error %d in getting DataBlock size\n", -1);
 
       return( -1 );
     }
@@ -1417,7 +1417,7 @@ int GetDataBlock( struct ClassBase *cb, struct GIFAnimInstData *gaid, UBYTE *buf
 
     if( (count != 0) && (!ReadOK( cb, gifdec, buf, (ULONG)count ) ) )
     {
-      error_printf( cb, gaid, "error in reading DataBlock\n" );
+      error_printf( cb, gaid, "error %d in reading DataBlock\n", -1);
 
       return( -1 );
     }
@@ -1450,7 +1450,7 @@ int GetCode( struct ClassBase *cb, struct GIFAnimInstData *gaid, int code_size, 
       if( gifdec -> GetCode . done )
       {
         if( (gifdec -> GetCode . curbit) >= (gifdec -> GetCode . lastbit) )
-          error_printf( cb, gaid, "GetCode: ran off the end of my bits\n" );
+          error_printf( cb, gaid, "GetCode: ran past the end of code bits (%d)\n", gifdec->GetCode.lastbit);
 
         return( -1 );
       }
@@ -1577,7 +1577,7 @@ int LWZReadByte( struct ClassBase *cb, struct GIFAnimInstData *gaid, BOOL flag, 
             ;
 
           if( count != 0 )
-            error_printf( cb, gaid, "missing EOD in data stream (common occurence)\n" );
+            error_printf( cb, gaid, "missing EOD in data stream (common occurence) (count=%d)\n", count);
 
           return( -2 );
         }
@@ -1596,7 +1596,7 @@ int LWZReadByte( struct ClassBase *cb, struct GIFAnimInstData *gaid, BOOL flag, 
         *gifdec -> LWZReadByte . sp++ = gifdec -> LWZReadByte . table[ 1 ][ code ];
 
         if( code == gifdec -> LWZReadByte . table[ 0 ][ code ] )
-          error_printf( cb, gaid, "circular table entry BIG ERROR\n" );
+          error_printf( cb, gaid, "circular table entry (code=%d) BIG ERROR\n", code);
 
         code = gifdec -> LWZReadByte . table[ 0 ][ code ];
       }
@@ -1649,11 +1649,11 @@ int ReadImage( struct ClassBase *cb, struct GIFAnimInstData *gaid, UBYTE *image,
       D(bug("[gifanim.datatype]: %s: skipping gif image...\n", __PRETTY_FUNCTION__ ) );
 
       /* Loop until end of raster data */
-      for( ;; )
+      while(TRUE)
       {
         if( !ReadOK( cb, gifdec, &c, 1 ) )
         {
-          error_printf( cb, gaid, "EOF / reading block byte count\n" );
+          error_printf( cb, gaid, "EOF (%d) / reading block byte count\n", -1);
           return( -1 );
         }
 
@@ -1679,7 +1679,7 @@ int ReadImage( struct ClassBase *cb, struct GIFAnimInstData *gaid, UBYTE *image,
             pass    = 0UL;                       /* interlace pass */
 
       if( LWZReadByte( cb, gaid, TRUE, c ) < 0 )
-        error_printf( cb, gaid, "error reading image\n" );
+        error_printf( cb, gaid, "error (<%d) reading image\n", 0);
 
       D(bug("[gifanim.datatype]: %s: reading %lx %ld.%ld / %ld by %ld%s GIF image\n", __PRETTY_FUNCTION__, image, left, top, len, height, interlace ? " interlaced" : "" ) );
 
