@@ -11,7 +11,9 @@
 **
 */
 
-#define DEBUG 1
+#ifndef DEBUG
+#   define DEBUG 0
+#endif
 #include <aros/debug.h>
 
 struct MyStackSwapStruct;
@@ -1107,23 +1109,31 @@ void OpenLogfile( struct ClassBase *cb, struct GIFAnimInstData *gaid )
 #if !defined(__AROS__)
 void error_printf( struct ClassBase *cb, struct GIFAnimInstData *gaid, STRPTR format, ... )
 {
+    va_list args;
+
     if( (gaid -> gaid_VerboseOutput) != (BPTR)-1L )
     {
-      OpenLogfile( cb, gaid );
+        OpenLogfile( cb, gaid );
 
-      if( gaid -> gaid_VerboseOutput )
-      {
-        VFPrintf( (gaid -> gaid_VerboseOutput), format, (APTR)((&format) + 1) );
-      }
+        if( gaid -> gaid_VerboseOutput )
+        {
+            va_start (args, format);
+            VFPrintf( (gaid -> gaid_VerboseOutput), format, args);
+            va_end (args);
+        }
     }
 }
 
 
 void verbose_printf( struct ClassBase *cb, struct GIFAnimInstData *gaid, STRPTR format, ... )
 {
+    va_list args;
+
     if( (gaid -> gaid_VerboseOutput) && ((gaid -> gaid_VerboseOutput) != (BPTR)-1L) )
     {
-      VFPrintf( (gaid -> gaid_VerboseOutput), format, (APTR)((&format) + 1) );
+        va_start (args, format);
+        VFPrintf( (gaid -> gaid_VerboseOutput), format, args);
+        va_end (args);
     }
 }
 #endif
